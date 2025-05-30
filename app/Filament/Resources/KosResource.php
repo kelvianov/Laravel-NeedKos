@@ -23,6 +23,11 @@ class KosResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('user_id')
+                    ->label('User ID')
+                    ->default(fn () => Filament::auth()->id())
+                    ->disabled()
+                    ->dehydrated(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
