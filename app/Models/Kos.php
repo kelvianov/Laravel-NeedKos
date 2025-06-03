@@ -15,13 +15,31 @@ class Kos extends Model
         'facilities',
         'price',
         'image',
+        'gender',
         'rules',
         'contact_person',
         'user_id',  // pastikan ini bisa diisi mass assignment
+    ];
+
+    protected $casts = [
+        'image' => 'array',
+        'facilities' => 'array',
     ];
 
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id'); // relasi ke pemilik kos
     }
+
+    public function getGenderLabelAttribute()
+{
+    return match($this->gender) {
+        'male' => 'Laki-laki',
+        'female' => 'Perempuan',
+        'mixed' => 'Campuran',
+        default => 'Standard',
+    };
+}
+
+
 }

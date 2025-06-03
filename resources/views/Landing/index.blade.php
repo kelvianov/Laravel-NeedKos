@@ -2,16 +2,14 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>KosKu - Temukan Kos Impian Anda</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />    <title>KosKu - Temukan Kos Impian Anda</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/hero.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/search.css') }}" />
+
 </head>
 <body>
-    <div id="loading-screen">
-        <div class="spinner"></div>
-    </div>
-
     <!-- Header -->
     <header class="header">
         @include('components.navbar')
@@ -20,86 +18,130 @@
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-content">
-            <h1 class="floating">Temukan Kos Impian Anda</h1>
-            <p>Platform terpercaya untuk mencari kos-kosan berkualitas dengan harga terjangkau di seluruh Indonesia</p>
-            <div class="search-box">
-                <input type="text" placeholder="Cari berdasarkan lokasi, harga, atau fasilitas..." />
-                <button class="search-btn">
-                    <i class="fas fa-search"></i> Cari Kos
-                </button>
+            <h1>Find Your Perfect Stay</h1>
+            <p>Discover comfortable and affordable accommodations that match your lifestyle</p>              <div class="search-container">
+                <form action="{{ route('landing.search') }}" method="GET" class="search-form">
+                    <div class="search-input-container">
+                        <input 
+                            type="text" 
+                            name="query"
+                            class="search-input" 
+                            placeholder="Enter city name (e.g. Bandung, Jakarta)..."
+                            value="{{ $searchQuery ?? '' }}"
+                            required
+                            autocomplete="off"
+                        >
+                        <div class="city-suggestions" style="hidden: none;">
+                            @isset($locations)
+                                @foreach($locations as $city)
+                                    <div class="city-header" data-city-header="{{ $city['name'] }}">
+                                        <div class="city-suggestion" data-city="{{ $city['name'] }}" data-type="city">
+                                            <i class="fas fa-city"></i> {{ $city['name'] }}
+                                        </div>
+                                        @foreach($city['areas'] as $area)
+                                            <div class="city-suggestion area-suggestion" 
+                                                 data-city="{{ $area['name'] }}" 
+                                                 data-type="area"
+                                                 data-parent="{{ $city['name'] }}">
+                                                <i class="fas fa-map-marker-alt"></i> {{ $area['name'] }}
+                                                <span class="area-city">{{ $city['name'] }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endforeach
+                            @endisset
+                        </div>
+                    </div>
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </form>
+            </div><div class="search-tags">
+                <a href="{{ route('landing.search', ['query' => 'Near University']) }}" class="search-tag">Near Universities</a>
+                <a href="{{ route('landing.search', ['query' => 'City Center']) }}" class="search-tag">City Center</a>
+                <a href="{{ route('landing.search', ['query' => 'Monthly Deals']) }}" class="search-tag">Monthly Deals</a>
+                <a href="{{ route('landing.search', ['query' => 'Premium']) }}" class="search-tag">Premium Rooms</a>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section class="features" id="about">
+    <section class="features">
         <div class="container">
-            <h2 class="section-title fade-in">Mengapa Memilih KosKu?</h2>
+            <h2>Why Choose KosKu</h2>
             <div class="features-grid">
-                <div class="feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <h3>Pencarian Mudah</h3>
-                    <p>Temukan kos sesuai kriteria Anda dengan sistem pencarian yang canggih dan filter yang lengkap</p>
+                <div class="feature-card">
+                    <i class="fas fa-search"></i>
+                    <h3>Easy Search</h3>
+                    <p>Find your ideal accommodation with our advanced search system</p>
                 </div>
-                <div class="feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Terpercaya & Aman</h3>
-                    <p>Semua kos telah diverifikasi dan dijamin keamanannya untuk kenyamanan Anda</p>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Verified Listings</h3>
+                    <p>All properties are verified for your peace of mind</p>
                 </div>
-                <div class="feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                    <h3>Harga Transparan</h3>
-                    <p>Tidak ada biaya tersembunyi. Semua harga ditampilkan dengan jelas dan transparan</p>
-                </div>
-                <div class="feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-headset"></i>
-                    </div>
-                    <h3>Support 24/7</h3>
-                    <p>Tim customer service kami siap membantu Anda kapan saja selama 24 jam</p>
-                </div>
-                <div class="feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>Aplikasi Mobile</h3>
-                    <p>Akses KosKu dimana saja dan kapan saja melalui aplikasi mobile yang user-friendly</p>
-                </div>
-                <div class="feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <h3>Review Terpercaya</h3>
-                    <p>Baca review dan rating dari penghuni sebelumnya untuk membantu keputusan Anda</p>
+                <div class="feature-card">
+                    <i class="fas fa-star"></i>
+                    <h3>Best Prices</h3>
+                    <p>Competitive rates with no hidden fees</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Properties Section -->
-    <section class="properties" id="properties">
+    <!-- Properties Section -->    <section class="properties" id="properties">
         <div class="container">
-            <h2 class="section-title fade-in">Kos Populer</h2>
-            <div class="properties-grid">
-                @foreach($kos as $item)
-                    <a href="{{ route('kos.show', $item->id) }}" class="property-card-link">
-                        <div class="property-card fade-in">
-                            <div style="background-image: url('{{ asset('storage/' . $item->image) }}'); background-size: cover; background-position: center; height: 200px; border-radius: 8px;"></div>
-                            <div class="property-info">
-                                <div class="property-price">Rp {{ number_format($item->price, 0, ',', '.') }}/bulan</div>
-                                <div class="property-title">{{ $item->name }}</div>
-                                <div class="property-location"><i class="fas fa-map-marker-alt"></i> {{ $item->address }}</div>
-                                <div class="property-features"></div>
+            @if(isset($searchQuery))
+                <div class="search-results-header">
+                    <h2>
+                        @if($kos->count() > 0)
+                            Search Results for "{{ $searchQuery }}"
+                        @else
+                            No results found for "{{ $searchQuery }}"
+                        @endif
+                    </h2>
+                    <a href="{{ route('index') }}" class="clear-search">Clear Search</a>
+                </div>            @else
+                <div class="section-header">
+                    <div class="header-left">
+                        <h2>Featured Properties</h2>
+                        <div class="carousel-buttons">
+                            <button class="carousel-btn prev-btn" aria-label="Previous">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="carousel-btn next-btn" aria-label="Next">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <a href="{{ route('landing.search') }}" class="view-all-link">
+                        Lihat semua
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            @endif
+            <div class="carousel-container">
+                <div class="properties-grid">
+                    @foreach($kos as $item)
+               <a href="{{ route('kos.show', $item->id) }}" class="property-card no-underline">
+
+                       <div class="property-image" style="background-image: url('{{ asset('storage/' . (is_array($item->image) ? $item->image[0] : $item->image)) }}');">
+
+                           <div class="property-tag">{{ $item->gender_label }}</div>
+
+                        </div>
+                        <div class="property-info">
+                            <h3>{{ $item->name }}</h3>
+                            <p class="property-location">
+                                <i class="fas fa-map-marker-alt"></i> 
+                                {{ $item->address }}
+                            </p>
+                            <div class="property-price">
+                                Rp {{ number_format($item->price, 0, ',', '.') }}/month
                             </div>
                         </div>
                     </a>
-                @endforeach
+                @endforeach                </div>
             </div>
         </div>
     </section>
@@ -107,20 +149,167 @@
     <!-- CTA Section -->
     <section class="cta-section">
         <div class="container">
-            <h2 class="fade-in">Siap Menemukan Kos Impian Anda?</h2>
-            <p class="fade-in">Bergabunglah dengan ribuan pengguna yang telah menemukan kos terbaik melalui KosKu</p>
-            <div class="cta-buttons fade-in">
-                <a href="#" class="btn-primary">Mulai Pencarian</a>
-                <a href="#" class="btn-secondary">Daftar Sekarang</a>
+            <h2>Ready to Find Your New Home?</h2>
+            <p>Join thousands of happy residents who found their perfect stay with us</p>
+            <div class="cta-buttons">
+                <a href="#" class="cta-btn primary">Start Searching</a>
+                <a href="#" class="cta-btn secondary">Learn More</a>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer" id="contact">
+    <footer class="footer">
         @include('components.footer')
-    </footer> 
-
-    <script src="{{ asset('js/main.js') }}"></script>
+    </footer>    <script src="{{ asset('js/main.js') }}"></script>    <script>        document.addEventListener('DOMContentLoaded', function() {
+            const searchForm = document.querySelector('.search-form');
+            const searchInput = document.querySelector('.search-input');
+            const searchTags = document.querySelectorAll('.search-tag');
+            const citySuggestions = document.querySelector('.city-suggestions');
+            const cityItems = document.querySelectorAll('.city-suggestion');
+            let currentFocus = -1;
+            
+            // Show suggestions on input focus
+            searchInput.addEventListener('focus', () => {
+                searchForm.classList.add('focused');
+                if (searchInput.value.length > 0) {
+                    filterLocations(searchInput.value);
+                }
+                citySuggestions.style.display = 'block';
+            });
+            
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!searchForm.contains(e.target)) {
+                    citySuggestions.style.display = 'none';
+                }
+            });
+            
+            // Handle keyboard navigation
+            searchInput.addEventListener('keydown', (e) => {
+                const activeItems = [...cityItems].filter(item => item.style.display !== 'none');
+                
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    currentFocus++;
+                    addActive(activeItems);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    currentFocus--;
+                    addActive(activeItems);
+                } else if (e.key === 'Enter' && currentFocus > -1) {
+                    e.preventDefault();
+                    if (activeItems[currentFocus]) {
+                        activeItems[currentFocus].click();
+                    }
+                }
+            });
+            
+            // Filter locations as user types
+            searchInput.addEventListener('input', (e) => {
+                filterLocations(e.target.value);
+                currentFocus = -1;
+            });
+            
+            // Handle location selection
+            cityItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    searchInput.value = item.dataset.city;
+                    citySuggestions.style.display = 'none';
+                    searchForm.submit();
+                });
+            });
+            
+            function addActive(items) {
+                removeActive(items);
+                if (currentFocus >= items.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = items.length - 1;
+                if (items[currentFocus]) {
+                    items[currentFocus].classList.add('active');
+                    items[currentFocus].scrollIntoView({ block: 'nearest' });
+                }
+            }
+            
+            function removeActive(items) {
+                items.forEach(item => item.classList.remove('active'));
+            }
+            
+            function filterLocations(query) {
+                const q = query.toLowerCase();
+                let hasMatches = false;
+                
+                cityItems.forEach(item => {
+                    const location = item.dataset.city.toLowerCase();
+                    const type = item.dataset.type;
+                    const isMatch = location.includes(q);
+                    
+                    if (isMatch) {
+                        item.style.display = 'flex';
+                        if (type === 'area') {
+                            const cityHeader = document.querySelector(`[data-city-header="${item.dataset.parent}"]`);
+                            if (cityHeader) cityHeader.style.display = 'block';
+                        }
+                        hasMatches = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                citySuggestions.style.display = hasMatches ? 'block' : 'none';
+            }
+            
+            // Add loading state to form on submit
+            searchForm.addEventListener('submit', () => {
+                if (searchInput.value.trim()) {
+                    searchForm.classList.add('loading');
+                }
+            });
+            
+            // Carousel functionality
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            const propertiesGrid = document.querySelector('.properties-grid');
+            const propertyCards = document.querySelectorAll('.property-card');
+            
+            let currentPosition = 0;
+            const cardWidth = propertyCards[0]?.offsetWidth || 0;
+            const gap = 24; // This should match the gap in CSS
+            const cardsPerView = window.innerWidth > 768 ? 3 : 1;
+            const maxPosition = Math.max(0, propertyCards.length - cardsPerView);
+            
+            function updateCarouselButtons() {
+                prevBtn.style.opacity = currentPosition === 0 ? '0.5' : '1';
+                nextBtn.style.opacity = currentPosition >= maxPosition ? '0.5' : '1';
+            }
+            
+            prevBtn.addEventListener('click', () => {
+                if (currentPosition > 0) {
+                    currentPosition--;
+                    const translateX = -(currentPosition * (cardWidth + gap));
+                    propertiesGrid.style.transform = `translateX(${translateX}px)`;
+                    updateCarouselButtons();
+                }
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                if (currentPosition < maxPosition) {
+                    currentPosition++;
+                    const translateX = -(currentPosition * (cardWidth + gap));
+                    propertiesGrid.style.transform = `translateX(${translateX}px)`;
+                    updateCarouselButtons();
+                }
+            });
+            
+            // Initialize carousel state
+            updateCarouselButtons();
+            
+            // Update carousel on window resize
+            window.addEventListener('resize', () => {
+                currentPosition = 0;
+                propertiesGrid.style.transform = 'translateX(0)';
+                updateCarouselButtons();
+            });
+        });
+    </script>
 </body>
 </html>

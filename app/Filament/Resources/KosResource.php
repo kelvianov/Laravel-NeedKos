@@ -19,39 +19,89 @@ class KosResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->label('User ID')
-                    ->default(fn () => Filament::auth()->id())
-                    ->disabled()
-                    ->dehydrated(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('address')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('description')
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('facilities')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('price')
-                    ->required()
-                    ->numeric()
-                    ->prefix('Rp'),
-                Forms\Components\FileUpload::make('image')
-                    ->image()
-                    ->required(),
-                Forms\Components\Textarea::make('rules')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('contact_person')
-                    ->required()
-                    ->maxLength(255),
-            ]);
-    }
+public static function form(Form $form): Form
+{
+    return $form
+        ->schema([
+            Forms\Components\TextInput::make('user_id')
+                ->label('User ID')
+                ->default(fn () => Filament::auth()->id())
+                ->disabled()
+                ->dehydrated()
+                ->columnSpanFull(),
+
+            Forms\Components\Grid::make(2)
+                ->schema([
+                    Forms\Components\TextInput::make('name')
+                        ->label('Nama Kos')
+                        ->required()
+                        ->maxLength(255),
+
+                    Forms\Components\TextInput::make('price')
+                        ->label('Harga per Bulan')
+                        ->required()
+                        ->numeric()
+                        ->prefix('Rp'),
+                ]),
+
+            Forms\Components\TextInput::make('contact_person')
+                ->label('Kontak Pemilik')
+                ->required()
+                ->maxLength(255)
+                ->columnSpanFull(),
+
+            Forms\Components\Textarea::make('address')
+                ->label('Alamat Lengkap')
+                ->required()
+                ->rows(3)
+                ->columnSpanFull(),
+
+            Forms\Components\Textarea::make('description')
+                ->label('Deskripsi Kos')
+                ->rows(3)
+                ->columnSpanFull(),
+
+            Forms\Components\CheckboxList::make('facilities')
+                ->label('Fasilitas')
+                ->options([
+                    'wifi' => 'Wi-Fi',
+                    'ac' => 'AC',
+                    'parking' => 'Parkir',
+                    'laundry' => 'Laundry',
+                    'gym' => 'Gym',
+                    'pool' => 'Kolam Renang',
+                    'security' => 'Keamanan 24 Jam',
+                    'kitchen' => 'Dapur',
+                ])
+                ->columns(2)
+                ->required()
+                ->columnSpanFull(),
+
+            Forms\Components\Textarea::make('rules')
+                ->label('Peraturan Kos')
+                ->rows(3)
+                ->columnSpanFull(),
+
+            Forms\Components\FileUpload::make('image')
+                ->label('Foto Kos (Maks. 5 Gambar)')
+                ->image()
+                ->multiple()
+                ->maxFiles(5)
+                ->required()
+                ->columnSpanFull(),
+            
+              Forms\Components\Radio::make('gender')
+                ->label('Jenis Kelamin Penghuni')
+                ->options([
+                    'male' => 'Laki-laki',
+                    'female' => 'Perempuan',
+                    'mixed' => 'Campuran',
+                ])
+                ->required()
+                ->columnSpanFull(),
+        ]);
+}
+
 
     public static function table(Table $table): Table
     {
@@ -60,9 +110,11 @@ class KosResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')
-                    ->money()
+                    ->money('IDR')
                     ->sortable(),
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')
+    ->getStateUsing(fn ($record) => is_array($record->image) ? ($record->image[0] ?? null) : null),
+
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
