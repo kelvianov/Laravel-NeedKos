@@ -86,7 +86,7 @@ public static function form(Form $form): Form
                 ->label('Foto Kos (Maks. 5 Gambar)')
                 ->image()
                 ->multiple()
-                ->maxFiles(5)
+                ->maxFiles(6)
                 ->required()
                 ->columnSpanFull(),
             
@@ -113,8 +113,9 @@ public static function form(Form $form): Form
                     ->money('IDR')
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('image')
-    ->getStateUsing(fn ($record) => is_array($record->image) ? ($record->image[0] ?? null) : null),
-
+                    ->getStateUsing(fn ($record) => is_array($record->image) ? ($record->image[0] ?? null) : null),
+                Tables\Columns\TextColumn::make('gender')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()

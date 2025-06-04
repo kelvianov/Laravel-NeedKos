@@ -26,7 +26,7 @@
                             type="text" 
                             name="query"
                             class="search-input" 
-                            placeholder="Enter city name (e.g. Bandung, Jakarta)..."
+                            placeholder="Mau tinggal di mana..."
                             value="{{ $searchQuery ?? '' }}"
                             required
                             autocomplete="off"
@@ -57,37 +57,39 @@
                     </button>
                 </form>
             </div><div class="search-tags">
-                <a href="{{ route('landing.search', ['query' => 'Near University']) }}" class="search-tag">Near Universities</a>
-                <a href="{{ route('landing.search', ['query' => 'City Center']) }}" class="search-tag">City Center</a>
-                <a href="{{ route('landing.search', ['query' => 'Monthly Deals']) }}" class="search-tag">Monthly Deals</a>
-                <a href="{{ route('landing.search', ['query' => 'Premium']) }}" class="search-tag">Premium Rooms</a>
+<a href="{{ route('landing.search', ['query' => 'Near Campus']) }}" class="search-tag">Dekat Kampus</a>
+<a href="{{ route('landing.search', ['query' => 'City Center']) }}" class="search-tag">Pusat Kota</a>
+<a href="{{ route('landing.search', ['query' => 'Monthly Deals']) }}" class="search-tag">Promo Bulanan</a>
+<a href="{{ route('landing.search', ['query' => 'Premium']) }}" class="search-tag">Kamar Eksklusif</a>
+
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section class="features">
-        <div class="container">
-            <h2>Why Choose KosKu</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <i class="fas fa-search"></i>
-                    <h3>Easy Search</h3>
-                    <p>Find your ideal accommodation with our advanced search system</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-shield-alt"></i>
-                    <h3>Verified Listings</h3>
-                    <p>All properties are verified for your peace of mind</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-star"></i>
-                    <h3>Best Prices</h3>
-                    <p>Competitive rates with no hidden fees</p>
-                </div>
+   <section class="features">
+    <div class="container">
+        <h2>Why Choose KosKu</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-search"></i>
+                <h3>Pencarian Cepat & Tepat</h3>
+                <p>Temukan kos impianmu hanya dalam hitungan detik.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Keamanan Terjamin</h3>
+                <p>Semua kosan sudah diverifikasi. Tinggal, tenang, dan nyaman.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-star"></i>
+                <h3>Harga Transparan</h3>
+                <p>Tidak ada biaya tersembunyi. Apa yang kamu lihat, itu yang kamu bayar.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
 
     <!-- Properties Section -->    <section class="properties" id="properties">
         <div class="container">
@@ -137,7 +139,7 @@
                                 {{ $item->address }}
                             </p>
                             <div class="property-price">
-                                Rp {{ number_format($item->price, 0, ',', '.') }}/month
+                                Rp {{ number_format($item->price, 0, ',', '.') }}/bulan
                             </div>
                         </div>
                     </a>
@@ -147,16 +149,17 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="container">
-            <h2>Ready to Find Your New Home?</h2>
-            <p>Join thousands of happy residents who found their perfect stay with us</p>
-            <div class="cta-buttons">
-                <a href="#" class="cta-btn primary">Start Searching</a>
-                <a href="#" class="cta-btn secondary">Learn More</a>
-            </div>
+   <section class="cta-section">
+    <div class="container">
+        <h2>Lagi Cari Kos Nyaman?</h2>
+        <p>Yuk, temukan kos impianmu dengan mudah dan cepat di KosKu!</p>
+        <div class="cta-buttons">
+            <a href="#" class="cta-btn primary">Cari Sekarang</a>
+            <a href="#" class="cta-btn secondary">Lihat Selengkapnya</a>
         </div>
-    </section>
+    </div>
+</section>
+
 
     <!-- Footer -->
     <footer class="footer">

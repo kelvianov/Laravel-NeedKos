@@ -41,20 +41,19 @@
         .logo {
             font-size: 2rem;
             font-weight: bold;
-        
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
        .nav-links {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  list-style: none;
-  gap: 2rem;
-}
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
 
 
         .nav-links a {
@@ -84,130 +83,10 @@
             width: 100%;
         }
 
-        
-        .cta-btn {
-            min-width: 100px;
-          
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            
-        }
-
-        .cta-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        /* Hero Section */
-      
-        .hero-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            text-align: center;
-            color: white;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards;
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 0;
-            animation: fadeInUp 1s ease 0.3s forwards;
-        }
-
-
-        .search-box input {
-            flex: 1;
-            border: none;
-            outline: none;
-            font-size: 1.1rem;
-            padding: 0.5rem;
-            color: #333;
-        }
-
-       
-
-        .search-btn:hover {
-            transform: scale(1.05);
-        }
-
-        /* Features Section */
-        .features {
-            padding: 5rem 0;
-            background: #f8f9fa;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-        }
-
         .feature-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             border-color: #667eea;
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #333;
-        }
-
-        .feature-card p {
-            color: #666;
-            line-height: 1.6;
         }
 
         /* Properties Section */
@@ -224,12 +103,12 @@
         }
 
         .property-card {
-    width: calc((100vw - 48px - 48px) / 3); /* (viewport - padding - gaps) / 3 cards */
-    max-width: 380px;
-    flex-shrink: 0;
-    border: none;
-    transition: all 0.3s ease;
-}
+            width: calc((100vw - 48px - 48px) / 3); /* (viewport - padding - gaps) / 3 cards */
+            max-width: 380px;
+            flex-shrink: 0;
+            border: none;
+            transition: all 0.3s ease;
+        }
 
         .property-card:hover {
             transform: translateY(-10px) scale(1.02);
@@ -242,8 +121,6 @@
             position: relative;
             overflow: hidden;
         }
-
-
 
         .property-info {
             padding: 1.5rem;

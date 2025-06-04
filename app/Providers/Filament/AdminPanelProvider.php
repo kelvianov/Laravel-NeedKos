@@ -17,6 +17,9 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Widgets\TotalKosWidget;
+use App\Filament\Widgets\TotalOwnersWidget;
+use App\Filament\Widgets\TotalTenantsWidget;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -54,6 +57,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->widgets([
+                TotalKosWidget::class,
+                TotalOwnersWidget::class,
+                TotalTenantsWidget::class,
             ]);
     }
 }
