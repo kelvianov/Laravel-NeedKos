@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateKos extends CreateRecord
 {
     protected static string $resource = KosResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

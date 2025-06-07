@@ -36,14 +36,24 @@ class LandingController extends Controller
         'Semarang' => ['Tembalang', 'Pleburan', 'Pedurungan', 'Banyumanik', 'Ngaliyan']
     ];
 
+    // Definisi area pusat kota untuk beberapa kota
+    private $pusatKotaAreas = [
+        'Jakarta' => ['Menteng', 'Sudirman', 'Thamrin', 'Kebayoran Baru'],
+        'Bandung' => ['Dago', 'Riau', 'Setiabudi'],
+        'Yogyakarta' => ['Malioboro', 'Seturan', 'Kaliurang'],
+        'Surabaya' => ['Gubeng', 'Wonokromo', 'Darmo'],
+        'Semarang' => ['Tembalang', 'Pleburan', 'Pedurungan'],
+        'Malang' => ['Soekarno Hatta', 'Dieng', 'Sawojajar'],
+    ];
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-       $kos = \App\Models\Kos::all();
-       $locations = $this->getFormattedLocations();
-       return view('landing.index', compact('kos', 'locations'));
+        $kos = Kos::orderBy('created_at', 'desc')->paginate(10);
+        $locations = $this->getFormattedLocations();
+        return view('landing.index', compact('kos', 'locations'));
     }
 
     private function getFormattedLocations()
@@ -64,111 +74,89 @@ class LandingController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->get('query');
-        
-        if (empty($query)) {
+        $query = strtolower(trim($request->get('query')));
+        $gender = $request->get('gender');
+        $priceRange = $request->get('price_range');
+
+        if (empty($query) && empty($gender) && empty($priceRange)) {
             return redirect()->route('index');
         }
 
         $matchedLocations = [];
-        $searchQuery = strtolower($query);
+        $kosQuery = Kos::query();
 
-        // Search in cities and their areas
-        foreach ($this->indonesianCities as $city => $areas) {
-            if (stripos($city, $searchQuery) !== false) {
-                // If city matches, include city and all its areas
-                $matchedLocations[] = $city;
-                $matchedLocations = array_merge($matchedLocations, $areas);
-            } else {
-                // Search in areas
-                foreach ($areas as $area) {
-                    if (stripos($area, $searchQuery) !== false) {
-                        $matchedLocations[] = $area;
-                        // Include parent city if area matches
-                        if (!in_array($city, $matchedLocations)) {
-                            $matchedLocations[] = $city;
+        // Jika pencarian mengandung kata 'pusat kota'
+        if (strpos($query, 'pusat kota') !== false) {
+            // Gabungkan semua area pusat kota
+            $allPusatKotaAreas = [];
+            foreach ($this->pusatKotaAreas as $areas) {
+                $allPusatKotaAreas = array_merge($allPusatKotaAreas, $areas);
+            }
+
+            $kosQuery->where(function($q) use ($allPusatKotaAreas) {
+                foreach ($allPusatKotaAreas as $area) {
+                    $q->orWhere('address', 'like', "%{$area}%");
+                }
+                $q->orWhere('address', 'like', "%pusat kota%"); // Jika ada kata literal
+            });
+        } else {
+            // Logika pencarian biasa berdasarkan kota dan area
+            foreach ($this->indonesianCities as $city => $areas) {
+                if (stripos($city, $query) !== false) {
+                    $matchedLocations[] = $city;
+                    $matchedLocations = array_merge($matchedLocations, $areas);
+                } else {
+                    foreach ($areas as $area) {
+                        if (stripos($area, $query) !== false) {
+                            $matchedLocations[] = $area;
+                            if (!in_array($city, $matchedLocations)) {
+                                $matchedLocations[] = $city;
+                            }
                         }
                     }
                 }
             }
+
+            if (!empty($matchedLocations)) {
+                $kosQuery->where(function($q) use ($matchedLocations, $query) {
+                    foreach ($matchedLocations as $location) {
+                        $q->orWhere('address', 'like', "%{$location}%");
+                    }
+                    $q->orWhere('address', 'like', "%{$query}%");
+                });
+            } elseif (!empty($query)) {
+                $kosQuery->where('address', 'like', "%{$query}%");
+            }
         }
 
-        // If no locations matched, try direct address search
-        if (empty($matchedLocations)) {
-            $kos = Kos::where('address', 'like', "%{$query}%")
-                     ->orderBy('created_at', 'desc')
-                     ->get();
-        } else {
-            // Search for kos in matched locations
-            $kos = Kos::where(function($q) use ($matchedLocations, $query) {
-                foreach ($matchedLocations as $location) {
-                    $q->orWhere('address', 'like', "%{$location}%");
-                }
-                // Also include direct address matches
-                $q->orWhere('address', 'like', "%{$query}%");
-            })->orderBy('created_at', 'desc')->get();
+        // Filter gender jika ada
+        if ($gender) {
+            $kosQuery->where('gender', $gender);
         }
+
+        // Filter price_range jika ada
+        if ($priceRange) {
+            $rangeParts = explode('-', $priceRange);
+            if (count($rangeParts) === 2) {
+                [$min, $max] = $rangeParts;
+                $kosQuery->whereBetween('price', [(int)$min, (int)$max]);
+            }
+        }
+
+        $kos = $kosQuery->orderBy('created_at', 'desc')->paginate(10);
 
         return view('landing.index', [
             'kos' => $kos,
             'searchQuery' => $query,
             'locations' => $this->getFormattedLocations(),
-            'matchedLocations' => $matchedLocations
+            'matchedLocations' => $matchedLocations,
+            'genderFilter' => $gender,
+            'priceRangeFilter' => $priceRange,
         ]);
     }
-
 
     public function testimonials()
     {
         return view('landing.testimonials');
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

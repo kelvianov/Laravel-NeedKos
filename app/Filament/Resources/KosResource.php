@@ -68,10 +68,9 @@ public static function form(Form $form): Form
                     'ac' => 'AC',
                     'parking' => 'Parkir',
                     'laundry' => 'Laundry',
-                    'gym' => 'Gym',
-                    'pool' => 'Kolam Renang',
                     'security' => 'Keamanan 24 Jam',
                     'kitchen' => 'Dapur',
+                    'TV' => 'TV',
                 ])
                 ->columns(2)
                 ->required()

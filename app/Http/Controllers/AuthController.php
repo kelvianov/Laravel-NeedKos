@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
@@ -23,9 +24,7 @@ class AuthController extends Controller
             'email'    => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|confirmed|min:6',
             'role'     => 'required|in:owner,tenant',
-        ]);
-
-        $user = User::create([
+        ]);        $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
@@ -34,12 +33,11 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        // Redirect sesuai role
-        if ($user->role === 'owner') {
-            return redirect('/admin'); // akses dashboard Filament
-        } else {
-            return redirect('/'); // halaman utama penyewa
-        }
+        // Trigger email verification
+        event(new Registered($user));
+
+        // Redirect ke halaman verifikasi email
+        return redirect()->route('verification.notice');
     }
 
     // Tampilkan form login
@@ -54,12 +52,13 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'email'    => ['required', 'email'],
             'password' => ['required'],
-        ]);
-
-        if (Auth::attempt($credentials)) {
+        ]);        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            $user = Auth::user();
+            $user = Auth::user();            // Cek apakah email sudah diverifikasi
+            if (is_null($user->email_verified_at)) {
+                return redirect()->route('verification.notice');
+            }
 
             if ($user->role === 'owner') {
                 return redirect('/admin');

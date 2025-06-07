@@ -46,7 +46,10 @@
 
 .search-input:focus {
     outline: none;
+    border-color: transparent; /* hilangkan garis */
+    box-shadow: none; /* hilangkan efek glow (jika ada) */
 }
+
 
 .search-input-container {
     position: relative;
