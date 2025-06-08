@@ -325,11 +325,17 @@
         
         <div class="verification-container">
             <h1 class="verification-title">Verifikasi Email Anda</h1>
-        
-        @if (session('status'))
+          @if (session('status'))
             <div class="success-message">
                 <i class="fas fa-check-circle"></i>
                 {{ session('status') }}
+            </div>
+        @endif
+
+        @if (session('message'))
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i>
+                {{ session('message') }}
             </div>
         @endif
         

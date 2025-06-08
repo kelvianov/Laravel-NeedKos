@@ -14,17 +14,27 @@ class AuthController extends Controller
     public function showRegister()
     {
         return view('auth.register');
-    }
-
-    // Proses register user baru
+    }    // Proses register user baru
     public function register(Request $request)
     {
         $request->validate([
             'name'     => 'required|string|max:255',
-            'email'    => 'required|string|email|max:255|unique:users',
+            'email'    => 'required|string|email|max:255',
             'password' => 'required|string|confirmed|min:6',
             'role'     => 'required|in:owner,tenant',
-        ]);        $user = User::create([
+        ]);
+
+        // Check if email already exists
+        $existingUser = User::where('email', $request->email)->first();
+        
+        if ($existingUser) {
+            return back()->withErrors([
+                'email' => 'Email sudah terdaftar. Silakan gunakan email lain atau login jika sudah memiliki akun.',
+            ])->withInput($request->except('password', 'password_confirmation'));
+        }
+
+        // Create new user - this is truly a new registration
+        $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
@@ -33,26 +43,36 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        // Trigger email verification
+        // Send email verification for new user only
         event(new Registered($user));
 
-        // Redirect ke halaman verifikasi email
-        return redirect()->route('verification.notice');
+        // Redirect to email verification notice with success message
+        return redirect()->route('verification.notice')->with('message', 
+            'Akun berhasil dibuat! Silakan cek email Anda untuk verifikasi.');
     }
 
     // Tampilkan form login
     public function showLogin()
     {
         return view('auth.login');
-    }
-
-    // Proses login
+    }    // Proses login
     public function login(Request $request)
     {
         $credentials = $request->validate([
             'email'    => ['required', 'email'],
             'password' => ['required'],
-        ]);        if (Auth::attempt($credentials)) {
+        ]);
+
+        // Check if email exists in database first
+        $user = User::where('email', $credentials['email'])->first();
+        
+        if (!$user) {
+            return back()->withErrors([
+                'email' => 'Email tidak terdaftar. Silakan daftar terlebih dahulu.',
+            ])->withInput($request->only('email'));
+        }
+
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
             $user = Auth::user();            // Cek apakah email sudah diverifikasi
@@ -68,8 +88,8 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Email atau password salah',
-        ])->onlyInput('email');
+            'email' => 'Password salah.',
+        ])->withInput($request->only('email'));
     }
 
     // Logout

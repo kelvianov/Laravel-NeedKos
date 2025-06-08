@@ -143,10 +143,18 @@
             text-decoration: none;
             font-weight: 600;
             transition: color 0.2s;
+        }        .auth-links a:hover {
+            color: #000;
         }
 
-        .auth-links a:hover {
-            color: #000;
+        .error-message {
+            background: #fef2f2;
+            border-left: 4px solid #dc2626;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            color: #991b1b;
+            border-radius: 8px;
+            font-size: 0.9rem;
         }
 
         @media (max-width: 768px) {
@@ -172,39 +180,55 @@
                 <h1>Welcome to KosKu</h1>
                 <p>Join our community and discover comfortable living spaces that match your lifestyle. Find your perfect accommodation today.</p>
             </div>
-        </div>
-
-        <div class="auth-side">
+        </div>        <div class="auth-side">
             <h2>Create Account</h2>
+            
+            @if(session('error'))
+                <div class="error-message">{{ session('error') }}</div>
+            @endif
+            
             <form method="POST" action="{{ route('register') }}">
                 @csrf
                 <div class="form-group">
                     <label class="form-label">Full Name</label>
-                    <input type="text" name="name" class="form-input" required>
+                    <input type="text" name="name" class="form-input" value="{{ old('name') }}" required>
+                    @error('name')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Email Address</label>
-                    <input type="email" name="email" class="form-input" required>
-                </div>
-
-                <div class="form-group">
+                    <input type="email" name="email" class="form-input" value="{{ old('email') }}" required>
+                    @error('email')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>                <div class="form-group">
                     <label class="form-label">Role</label>
                     <select id="role" name="role" class="form-input" required>
                         <option value="">Pilih Role</option>
-                        <option value="tenant">Penyewa Kos</option>
-                        <option value="owner">Pemilik Kos</option>
+                        <option value="tenant" {{ old('role') == 'tenant' ? 'selected' : '' }}>Penyewa Kos</option>
+                        <option value="owner" {{ old('role') == 'owner' ? 'selected' : '' }}>Pemilik Kos</option>
                     </select>
+                    @error('role')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Password</label>
                     <input type="password" name="password" class="form-input" required>
+                    @error('password')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Confirm Password</label>
                     <input type="password" name="password_confirmation" class="form-input" required>
+                    @error('password_confirmation')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <button type="submit" class="btn-register">Create Account</button>
