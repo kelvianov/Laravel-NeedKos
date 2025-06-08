@@ -46,15 +46,38 @@ class LandingController extends Controller
         'Malang' => ['Soekarno Hatta', 'Dieng', 'Sawojajar'],
     ];
 
-    // Definisi area dekat kampus untuk beberapa kota
-    private $dekatkampusAreas = [
-        'Jakarta' => ['Depok', 'Salemba', 'Pancoran', 'UI Depok', 'Binus Kemanggisan', 'Trisakti'],
-        'Bandung' => ['Dago', 'Dipatiukur', 'Ganesha', 'ITB', 'Unpad Jatinangor', 'Buah Batu'],
-        'Yogyakarta' => ['Seturan', 'Babarsari', 'Gejayan', 'UGM', 'Pogung', 'Jakal'],
-        'Surabaya' => ['Mulyorejo', 'Gubeng', 'ITS Sukolilo', 'Unair', 'Rungkut', 'Tenggilis'],
-        'Semarang' => ['Tembalang', 'Undip', 'Pleburan', 'Banyumanik', 'Unnes'],
-        'Malang' => ['Dieng', 'Sawojajar', 'Tlogomas', 'UB Malang', 'Lowokwaru', 'Sulfat'],
-    ];
+// Definisi area dekat kampus untuk beberapa kota
+private $dekatkampusAreas = [
+    'Jakarta' => [
+        'Depok', 'Salemba', 'Pancoran', 'UI Depok', 'Binus Kemanggisan', 'Trisakti',
+        'Kuningan', 'Thamrin', 'Menteng', 'Cikini', 'Kalibata', 'Senayan',
+        'Pasar Minggu', 'Cawang', 'Mampang Prapatan', 'Setiabudi', 'Kebayoran Baru'
+    ],
+    'Bandung' => [
+        'Dago', 'Dipatiukur', 'Ganesha', 'ITB', 'Unpad Jatinangor', 'Buah Batu',
+        'Ciumbuleuit', 'Cibiru', 'Sukajadi', 'Cicendo', 'Pasteur', 'Soreang',
+        'Rancaekek', 'Lembang', 'Margacinta', 'Cidadap'
+    ],
+    'Yogyakarta' => [
+        'Seturan', 'Babarsari', 'Gejayan', 'UGM', 'Pogung', 'Jakal',
+        'Malioboro', 'Tegalrejo', 'Gamping', 'Wonosari', 'Sleman', 'Kotagede',
+        'Kota Baru', 'Pathuk'
+    ],
+    'Surabaya' => [
+        'Mulyorejo', 'Gubeng', 'ITS Sukolilo', 'Unair', 'Rungkut', 'Tenggilis',
+        'Dukuh Pakis', 'Wonokromo', 'Gunungsari', 'Bubutan', 'Simokerto',
+        'Wiyung', 'Lakarsantri', 'Genteng'
+    ],
+    'Semarang' => [
+        'Tembalang', 'Undip', 'Pleburan', 'Banyumanik', 'Unnes',
+        'Candisari', 'Genuk', 'Pedurungan', 'Gayamsari', 'Mijen', 'Tugu',
+        'Semarang Tengah', 'Semarang Utara'
+    ],
+    'Malang' => [
+        'Dieng', 'Sawojajar', 'Tlogomas', 'UB Malang', 'Lowokwaru', 'Sulfat',
+        'Klojen', 'Blimbing', 'Kedungkandang', 'Batu', 'Pakisaji', 'Singosari'
+    ]
+];
 
     /**
      * Display a listing of the resource.
