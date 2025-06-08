@@ -1,12 +1,14 @@
+/* Hero Section - Optimized for instant loading */
 .hero {
     position: relative;
     min-height: calc(100vh - 72px);
     display: flex;
     align-items: center;
-
     margin-top: 72px;
     padding: 60px 0;
     overflow: hidden;
+    /* Prevent any flash of unstyled content */
+    background-color: #1a1a1a;
 }
 
 .hero::before {
@@ -16,10 +18,16 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('../images/modernnn-room.png');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('../images/modernnnnnn-room.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    /* Force immediate background loading */
+    background-attachment: scroll;
+    /* Ensure no flash during load */
+    opacity: 1;
+    /* Prevent any loading delays */
+    will-change: auto;
 }
 
 .hero-content {
@@ -31,6 +39,9 @@
     padding: 0 24px;
     text-align: center;
     color: #fff;
+    /* Ensure immediate text rendering */
+    opacity: 1;
+    visibility: visible;
 }
 
 .hero-content h1 {
@@ -38,6 +49,8 @@
     font-weight: 700;
     margin-bottom: 1.5rem;
     line-height: 1.2;
+    /* Remove any text rendering delays */
+    text-rendering: optimizeSpeed;
 }
 
 .hero-content p {
@@ -47,6 +60,8 @@
     margin-left: auto;
     margin-right: auto;
     opacity: 0.9;
+    /* Remove any text rendering delays */
+    text-rendering: optimizeSpeed;
 }
 
 .search-container {
@@ -56,6 +71,9 @@
     padding: 24px;
     border-radius: 12px;
     box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    /* Ensure immediate visibility */
+    opacity: 1;
+    visibility: visible;
 }
 
 .search-form {
@@ -69,7 +87,8 @@
     color: #333;
     border: 1px solid #eee;
     border-radius: 8px;
-    transition: all 0.2s;
+    /* Remove transition delays for instant response */
+    transition: none;
 }
 
 .search-input:focus {
@@ -90,7 +109,8 @@
     font-size: 0.95rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
+    /* Remove transition for instant response */
+    transition: none;
 }
 
 .search-btn:hover {
@@ -112,7 +132,8 @@
     border-radius: 100px;
     font-size: 0.9rem;
     text-decoration: none;
-    transition: all 0.2s;
+    /* Remove transition for instant response */
+    transition: none;
     backdrop-filter: blur(4px);
 }
 

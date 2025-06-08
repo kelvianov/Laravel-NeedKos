@@ -4,12 +4,76 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>KosKu - Temukan Kos Impian Anda</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-
+    
+    <!-- Preload critical hero background image for instant loading -->
+    <link rel="preload" href="{{ asset('images/modernnnnnn-room.png') }}" as="image" type="image/png">
+    
+    <!-- Critical CSS should load first -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/hero.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/search.css') }}" />
+      <!-- Font Awesome and other non-critical resources -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    
+    <!-- Critical inline CSS for instant hero loading -->
+    <style>
+        /* Critical hero styles for instant loading */
+        .hero {
+            position: relative;
+            min-height: calc(100vh - 72px);
+            display: flex;
+            align-items: center;
+            margin-top: 72px;
+            padding: 60px 0;
+            overflow: hidden;
+            background-color: #1a1a1a;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('{{ asset('images/modernnnnnn-room.png') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: scroll;
+            opacity: 1;
+            will-change: auto;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            text-align: center;
+            color: #fff;
+            opacity: 1;
+            visibility: visible;
+        }
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-rendering: optimizeSpeed;
+        }
+        .search-container {
+            background: #fff;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -241,11 +305,31 @@
     <!-- Footer -->
     <footer class="footer">
         @include('components.footer')
-    </footer>
-
-    <script src="{{ asset('js/main.js') }}"></script>
+    </footer>    <script src="{{ asset('js/main.js') }}"></script>
+    
+    <!-- Optimized loading script for instant hero display -->
     <script>
+        // Ensure immediate hero rendering
         document.addEventListener('DOMContentLoaded', function() {
+            // Force immediate visibility of hero elements
+            const hero = document.querySelector('.hero');
+            const heroContent = document.querySelector('.hero-content');
+            const searchContainer = document.querySelector('.search-container');
+            
+            if (hero) {
+                hero.style.opacity = '1';
+                hero.style.visibility = 'visible';
+            }
+            if (heroContent) {
+                heroContent.style.opacity = '1';
+                heroContent.style.visibility = 'visible';
+            }
+            if (searchContainer) {
+                searchContainer.style.opacity = '1';
+                searchContainer.style.visibility = 'visible';
+            }
+            
+            // Rest of the original functionality
             const searchForm = document.querySelector('.search-form');
             const searchInput = document.querySelector('.search-input');
             const searchTags = document.querySelectorAll('.search-tag');
