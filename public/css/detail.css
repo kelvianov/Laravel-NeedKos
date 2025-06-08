@@ -217,7 +217,8 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 8px;
+            margin-bottom: -10px;
+            margin-top: -12px;
         }
 
         .rating-stars {
@@ -234,7 +235,7 @@
         .property-location {
             color: #666;
             font-size: 1rem;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             margin-left: 0 !important;  /* paksa margin kiri 0 */
             padding-left: 0 !important; /* hapus padding kiri */
             text-align: left !important; /* ratakan kiri */

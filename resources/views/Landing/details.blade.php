@@ -57,10 +57,9 @@
 
         <!-- Property Header -->
         <div class="property-header">
-            <div class="property-info-left">
-                <div class="property-badges">
+            <div class="property-info-left">                <div class="property-badges">
                     <span class="badge badge-type">
-                        {{ $kos->type ?? 'Kos' }}
+                        {{ $kos->gender_label ?? 'Kos' }}
                     </span>
                 </div>
 
