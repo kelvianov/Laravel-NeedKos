@@ -39,11 +39,21 @@ class LandingController extends Controller
     // Definisi area pusat kota untuk beberapa kota
     private $pusatKotaAreas = [
         'Jakarta' => ['Menteng', 'Sudirman', 'Thamrin', 'Kebayoran Baru'],
-        'Bandung' => ['Dago', 'Riau', 'Setiabudi'],
+        'Bandung' => ['Dago', 'Riau', 'Setiabudi', 'Sukajadi'],
         'Yogyakarta' => ['Malioboro', 'Seturan', 'Kaliurang'],
         'Surabaya' => ['Gubeng', 'Wonokromo', 'Darmo'],
         'Semarang' => ['Tembalang', 'Pleburan', 'Pedurungan'],
         'Malang' => ['Soekarno Hatta', 'Dieng', 'Sawojajar'],
+    ];
+
+    // Definisi area dekat kampus untuk beberapa kota
+    private $dekatkampusAreas = [
+        'Jakarta' => ['Depok', 'Salemba', 'Pancoran', 'UI Depok', 'Binus Kemanggisan', 'Trisakti'],
+        'Bandung' => ['Dago', 'Dipatiukur', 'Ganesha', 'ITB', 'Unpad Jatinangor', 'Buah Batu'],
+        'Yogyakarta' => ['Seturan', 'Babarsari', 'Gejayan', 'UGM', 'Pogung', 'Jakal'],
+        'Surabaya' => ['Mulyorejo', 'Gubeng', 'ITS Sukolilo', 'Unair', 'Rungkut', 'Tenggilis'],
+        'Semarang' => ['Tembalang', 'Undip', 'Pleburan', 'Banyumanik', 'Unnes'],
+        'Malang' => ['Dieng', 'Sawojajar', 'Tlogomas', 'UB Malang', 'Lowokwaru', 'Sulfat'],
     ];
 
     /**
@@ -98,6 +108,23 @@ class LandingController extends Controller
                     $q->orWhere('address', 'like', "%{$area}%");
                 }
                 $q->orWhere('address', 'like', "%pusat kota%"); // Jika ada kata literal
+            });
+        }
+        // Jika pencarian mengandung kata 'dekat kampus'
+        elseif (strpos($query, 'dekat kampus') !== false) {
+            // Gabungkan semua area dekat kampus
+            $allDekatkampusAreas = [];
+            foreach ($this->dekatkampusAreas as $areas) {
+                $allDekatkampusAreas = array_merge($allDekatkampusAreas, $areas);
+            }
+
+            $kosQuery->where(function($q) use ($allDekatkampusAreas) {
+                foreach ($allDekatkampusAreas as $area) {
+                    $q->orWhere('address', 'like', "%{$area}%");
+                }
+                $q->orWhere('address', 'like', "%kampus%"); // Jika ada kata literal
+                $q->orWhere('address', 'like', "%universitas%"); // Jika ada kata universitas
+                $q->orWhere('address', 'like', "%college%"); // Jika ada kata college
             });
         } else {
             // Logika pencarian biasa berdasarkan kota dan area
