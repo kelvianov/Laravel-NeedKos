@@ -19,14 +19,13 @@
 
 <!-- Detail Section -->
 <section class="property-detail">
-    <div class="container">
-        <!-- Breadcrumb -->
+    <div class="container">        <!-- Breadcrumb -->
         <nav class="breadcrumb">
             <a href="#">Kos</a>
             <span class="breadcrumb-separator">></span>
-            <a href="#">Bandung</a>
+            <a href="#">{{ $kos->location_info['city'] }}</a>
             <span class="breadcrumb-separator">></span>
-            <a href="#">West Java</a>
+            <a href="#">{{ $kos->location_info['province'] }}</a>
             <span class="breadcrumb-separator">></span>
             <span>{{ $kos->name }}</span>
         </nav>
