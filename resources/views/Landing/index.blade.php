@@ -191,15 +191,22 @@
                             <option value="female" @if(request('gender')=='female') selected @endif>Perempuan</option>
                             <option value="mixed" @if(request('gender')=='mixed') selected @endif>Campuran</option>
                         </select>
-                    </div>
-
-                    <div class="filter-group">
+                    </div>                    <div class="filter-group">
                         <label class="filter-label">Rentang Harga</label>
                         <select name="price_range" id="price-select" class="form-input">
                             <option value="">Semua Harga</option>
                             <option value="0-500000" @if(request('price_range')=='0-500000') selected @endif>Rp 0 - 500.000</option>
                             <option value="500001-1000000" @if(request('price_range')=='500001-1000000') selected @endif>Rp 500.000 - 1.000.000</option>
                             <option value="1000001-2000000" @if(request('price_range')=='1000001-2000000') selected @endif>Rp 1.000.000 - 2.000.000</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Lokasi Strategis</label>
+                        <select name="location_type" id="location-select" class="form-input">
+                            <option value="">Semua Lokasi</option>
+                            <option value="dekat_kampus" @if(request('location_type')=='dekat_kampus') selected @endif>Dekat Kampus</option>
+                            <option value="pusat_kota" @if(request('location_type')=='pusat_kota') selected @endif>Pusat Kota</option>
                         </select>
                     </div>
 

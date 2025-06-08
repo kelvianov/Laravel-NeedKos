@@ -1031,12 +1031,10 @@ h2 {
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        /* Filter Form */
+        }        /* Filter Form */
         .filter-form {
             display: grid;
-            grid-template-columns: 1fr 1fr auto;
+            grid-template-columns: 1fr 1fr 1fr auto;
             gap: 16px;
             align-items: end;
         }
@@ -1154,6 +1152,12 @@ h2 {
 
         .clear-filters:hover {
             color: #000;
+        }        /* Tablet Responsive */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .filter-form {
+                grid-template-columns: 1fr 1fr auto;
+                gap: 12px;
+            }
         }
 
         /* Mobile Responsive */

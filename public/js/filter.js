@@ -4,11 +4,10 @@
             
             content.classList.toggle('active');
             chevron.classList.toggle('active');
-        }
-
-        function updateFilterSubtitle() {
+        }        function updateFilterSubtitle() {
             const genderSelect = document.getElementById('gender-select');
             const priceSelect = document.getElementById('price-select');
+            const locationSelect = document.getElementById('location-select');
             const subtitle = document.getElementById('filter-subtitle');
             const activeFilters = document.getElementById('active-filters');
             
@@ -25,6 +24,11 @@
                 filterText.push(priceSelect.options[priceSelect.selectedIndex].text);
             }
             
+            if (locationSelect && locationSelect.value) {
+                activeCount++;
+                filterText.push(locationSelect.options[locationSelect.selectedIndex].text);
+            }
+            
             if (activeCount > 0) {
                 subtitle.textContent = `${activeCount} filter aktif: ${filterText.join(', ')}`;
                 showActiveFilters();
@@ -32,12 +36,11 @@
                 subtitle.textContent = 'Pilih kriteria untuk menyaring hasil';
                 activeFilters.style.display = 'none';
             }
-        }
-
-        function showActiveFilters() {
+        }        function showActiveFilters() {
             const activeFilters = document.getElementById('active-filters');
             const genderSelect = document.getElementById('gender-select');
             const priceSelect = document.getElementById('price-select');
+            const locationSelect = document.getElementById('location-select');
             
             let filtersHTML = '';
             
@@ -59,18 +62,30 @@
                 `;
             }
             
+            if (locationSelect && locationSelect.value) {
+                filtersHTML += `
+                    <span class="filter-tag">
+                        Lokasi: ${locationSelect.options[locationSelect.selectedIndex].text}
+                        <span class="filter-tag-remove" onclick="removeFilter('location')">&times;</span>
+                    </span>
+                `;
+            }
+            
             if (filtersHTML) {
                 filtersHTML += '<button class="clear-filters" onclick="clearAllFilters()">Hapus Semua</button>';
                 activeFilters.innerHTML = filtersHTML;
                 activeFilters.style.display = 'flex';
             }
-        }
-
-        function removeFilter(type) {
+        }        function removeFilter(type) {
             if (type === 'gender') {
                 document.getElementById('gender-select').value = '';
             } else if (type === 'price') {
                 document.getElementById('price-select').value = '';
+            } else if (type === 'location') {
+                const locationSelect = document.getElementById('location-select');
+                if (locationSelect) {
+                    locationSelect.value = '';
+                }
             }
             updateFilterSubtitle();
         }
@@ -78,12 +93,19 @@
         function clearAllFilters() {
             document.getElementById('gender-select').value = '';
             document.getElementById('price-select').value = '';
+            const locationSelect = document.getElementById('location-select');
+            if (locationSelect) {
+                locationSelect.value = '';
+            }
             updateFilterSubtitle();
-        }
-
-        // Add event listeners
+        }        // Add event listeners
         document.getElementById('gender-select').addEventListener('change', updateFilterSubtitle);
         document.getElementById('price-select').addEventListener('change', updateFilterSubtitle);
+        
+        const locationSelect = document.getElementById('location-select');
+        if (locationSelect) {
+            locationSelect.addEventListener('change', updateFilterSubtitle);
+        }
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -98,13 +120,16 @@
                 document.getElementById('price-select').value = urlParams.get('price_range');
             }
             
+            if (urlParams.get('location_type') && locationSelect) {
+                locationSelect.value = urlParams.get('location_type');
+            }
+            
             updateFilterSubtitle();
         });
-
-
     document.addEventListener('DOMContentLoaded', function () {
         const genderSelect = document.getElementById('gender-select');
         const priceSelect = document.getElementById('price-select');
+        const locationSelect = document.getElementById('location-select');
 
         if (genderSelect) {
             new Choices(genderSelect, {
@@ -116,6 +141,14 @@
 
         if (priceSelect) {
             new Choices(priceSelect, {
+                searchEnabled: false,
+                itemSelectText: '',
+                shouldSort: false
+            });
+        }
+
+        if (locationSelect) {
+            new Choices(locationSelect, {
                 searchEnabled: false,
                 itemSelectText: '',
                 shouldSort: false

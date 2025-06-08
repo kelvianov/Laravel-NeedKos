@@ -87,72 +87,150 @@ class LandingController extends Controller
         $query = strtolower(trim($request->get('query')));
         $gender = $request->get('gender');
         $priceRange = $request->get('price_range');
+        $locationType = $request->get('location_type');
 
-        if (empty($query) && empty($gender) && empty($priceRange)) {
+        if (empty($query) && empty($gender) && empty($priceRange) && empty($locationType)) {
             return redirect()->route('index');
         }
 
         $matchedLocations = [];
         $kosQuery = Kos::query();
 
-        // Jika pencarian mengandung kata 'pusat kota'
-        if (strpos($query, 'pusat kota') !== false) {
-            // Gabungkan semua area pusat kota
-            $allPusatKotaAreas = [];
-            foreach ($this->pusatKotaAreas as $areas) {
-                $allPusatKotaAreas = array_merge($allPusatKotaAreas, $areas);
-            }
-
-            $kosQuery->where(function($q) use ($allPusatKotaAreas) {
-                foreach ($allPusatKotaAreas as $area) {
-                    $q->orWhere('address', 'like', "%{$area}%");
+        // Filter berdasarkan location_type dari dropdown
+        if ($locationType) {
+            if ($locationType === 'pusat_kota') {
+                // Gabungkan semua area pusat kota
+                $allPusatKotaAreas = [];
+                foreach ($this->pusatKotaAreas as $areas) {
+                    $allPusatKotaAreas = array_merge($allPusatKotaAreas, $areas);
                 }
-                $q->orWhere('address', 'like', "%pusat kota%"); // Jika ada kata literal
-            });
+
+                $kosQuery->where(function($q) use ($allPusatKotaAreas) {
+                    foreach ($allPusatKotaAreas as $area) {
+                        $q->orWhere('address', 'like', "%{$area}%");
+                    }
+                    $q->orWhere('address', 'like', "%pusat kota%");
+                });
+            } elseif ($locationType === 'dekat_kampus') {
+                // Gabungkan semua area dekat kampus
+                $allDekatkampusAreas = [];
+                foreach ($this->dekatkampusAreas as $areas) {
+                    $allDekatkampusAreas = array_merge($allDekatkampusAreas, $areas);
+                }
+
+                $kosQuery->where(function($q) use ($allDekatkampusAreas) {
+                    foreach ($allDekatkampusAreas as $area) {
+                        $q->orWhere('address', 'like', "%{$area}%");
+                    }
+                    $q->orWhere('address', 'like', "%kampus%");
+                    $q->orWhere('address', 'like', "%universitas%");
+                    $q->orWhere('address', 'like', "%college%");
+                });
+            }
         }
-        // Jika pencarian mengandung kata 'dekat kampus'
-        elseif (strpos($query, 'dekat kampus') !== false) {
-            // Gabungkan semua area dekat kampus
-            $allDekatkampusAreas = [];
-            foreach ($this->dekatkampusAreas as $areas) {
-                $allDekatkampusAreas = array_merge($allDekatkampusAreas, $areas);
-            }
 
-            $kosQuery->where(function($q) use ($allDekatkampusAreas) {
-                foreach ($allDekatkampusAreas as $area) {
-                    $q->orWhere('address', 'like', "%{$area}%");
+        // Jika ada query pencarian, tambahkan ke filter
+        if (!empty($query)) {
+            // Jika pencarian mengandung kata 'pusat kota'
+            if (strpos($query, 'pusat kota') !== false) {
+                // Gabungkan semua area pusat kota
+                $allPusatKotaAreas = [];
+                foreach ($this->pusatKotaAreas as $areas) {
+                    $allPusatKotaAreas = array_merge($allPusatKotaAreas, $areas);
                 }
-                $q->orWhere('address', 'like', "%kampus%"); // Jika ada kata literal
-                $q->orWhere('address', 'like', "%universitas%"); // Jika ada kata universitas
-                $q->orWhere('address', 'like', "%college%"); // Jika ada kata college
-            });
-        } else {
-            // Logika pencarian biasa berdasarkan kota dan area
-            foreach ($this->indonesianCities as $city => $areas) {
-                if (stripos($city, $query) !== false) {
-                    $matchedLocations[] = $city;
-                    $matchedLocations = array_merge($matchedLocations, $areas);
+
+                if ($locationType) {
+                    // Jika sudah ada location_type filter, gunakan AND
+                    $kosQuery->where(function($q) use ($allPusatKotaAreas) {
+                        foreach ($allPusatKotaAreas as $area) {
+                            $q->orWhere('address', 'like', "%{$area}%");
+                        }
+                        $q->orWhere('address', 'like', "%pusat kota%");
+                    });
                 } else {
-                    foreach ($areas as $area) {
-                        if (stripos($area, $query) !== false) {
-                            $matchedLocations[] = $area;
-                            if (!in_array($city, $matchedLocations)) {
-                                $matchedLocations[] = $city;
+                    // Jika belum ada location_type filter
+                    $kosQuery->where(function($q) use ($allPusatKotaAreas) {
+                        foreach ($allPusatKotaAreas as $area) {
+                            $q->orWhere('address', 'like', "%{$area}%");
+                        }
+                        $q->orWhere('address', 'like', "%pusat kota%");
+                    });
+                }
+            }
+            // Jika pencarian mengandung kata 'dekat kampus'
+            elseif (strpos($query, 'dekat kampus') !== false) {
+                // Gabungkan semua area dekat kampus
+                $allDekatkampusAreas = [];
+                foreach ($this->dekatkampusAreas as $areas) {
+                    $allDekatkampusAreas = array_merge($allDekatkampusAreas, $areas);
+                }
+
+                if ($locationType) {
+                    // Jika sudah ada location_type filter, gunakan AND
+                    $kosQuery->where(function($q) use ($allDekatkampusAreas) {
+                        foreach ($allDekatkampusAreas as $area) {
+                            $q->orWhere('address', 'like', "%{$area}%");
+                        }
+                        $q->orWhere('address', 'like', "%kampus%");
+                        $q->orWhere('address', 'like', "%universitas%");
+                        $q->orWhere('address', 'like', "%college%");
+                    });
+                } else {
+                    // Jika belum ada location_type filter
+                    $kosQuery->where(function($q) use ($allDekatkampusAreas) {
+                        foreach ($allDekatkampusAreas as $area) {
+                            $q->orWhere('address', 'like', "%{$area}%");
+                        }
+                        $q->orWhere('address', 'like', "%kampus%");
+                        $q->orWhere('address', 'like', "%universitas%");
+                        $q->orWhere('address', 'like', "%college%");
+                    });
+                }
+            } else {
+                // Logika pencarian biasa berdasarkan kota dan area
+                foreach ($this->indonesianCities as $city => $areas) {
+                    if (stripos($city, $query) !== false) {
+                        $matchedLocations[] = $city;
+                        $matchedLocations = array_merge($matchedLocations, $areas);
+                    } else {
+                        foreach ($areas as $area) {
+                            if (stripos($area, $query) !== false) {
+                                $matchedLocations[] = $area;
+                                if (!in_array($city, $matchedLocations)) {
+                                    $matchedLocations[] = $city;
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            if (!empty($matchedLocations)) {
-                $kosQuery->where(function($q) use ($matchedLocations, $query) {
-                    foreach ($matchedLocations as $location) {
-                        $q->orWhere('address', 'like', "%{$location}%");
+                if (!empty($matchedLocations)) {
+                    if ($locationType) {
+                        // Jika sudah ada location_type filter, gunakan AND
+                        $kosQuery->where(function($q) use ($matchedLocations, $query) {
+                            foreach ($matchedLocations as $location) {
+                                $q->orWhere('address', 'like', "%{$location}%");
+                            }
+                            $q->orWhere('address', 'like', "%{$query}%");
+                        });
+                    } else {
+                        // Jika belum ada location_type filter
+                        $kosQuery->where(function($q) use ($matchedLocations, $query) {
+                            foreach ($matchedLocations as $location) {
+                                $q->orWhere('address', 'like', "%{$location}%");
+                            }
+                            $q->orWhere('address', 'like', "%{$query}%");
+                        });
                     }
-                    $q->orWhere('address', 'like', "%{$query}%");
-                });
-            } elseif (!empty($query)) {
-                $kosQuery->where('address', 'like', "%{$query}%");
+                } else {
+                    if ($locationType) {
+                        // Jika sudah ada location_type filter, gunakan AND
+                        $kosQuery->where('address', 'like', "%{$query}%");
+                    } else {
+                        // Jika belum ada location_type filter
+                        $kosQuery->where('address', 'like', "%{$query}%");
+                    }
+                }
             }
         }
 
@@ -179,6 +257,7 @@ class LandingController extends Controller
             'matchedLocations' => $matchedLocations,
             'genderFilter' => $gender,
             'priceRangeFilter' => $priceRange,
+            'locationTypeFilter' => $locationType,
         ]);
     }
 
