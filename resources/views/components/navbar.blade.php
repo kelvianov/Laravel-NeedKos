@@ -28,7 +28,7 @@
                         <a href="{{ route('profile.show') }}" class="dropdown-item">
                             <i class="fas fa-user"></i> Profile
                         </a>
-                        <a href="#" class="dropdown-item">
+                        <a href="{{ route('saved.index') }}" class="dropdown-item">
                             <i class="fas fa-bookmark"></i> Saved
                         </a>
                         <div class="dropdown-divider"></div>

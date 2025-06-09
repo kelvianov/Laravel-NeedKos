@@ -45,6 +45,30 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Kos::class, 'user_id');
     }
+
+    /**
+     * Get the saved kos for this user
+     */
+    public function savedKos()
+    {
+        return $this->hasMany(SavedKos::class);
+    }
+
+    /**
+     * Get the kos that this user has saved (through pivot)
+     */
+    public function savedKosItems()
+    {
+        return $this->belongsToMany(Kos::class, 'saved_kos', 'user_id', 'kos_id')->withTimestamps();
+    }
+
+    /**
+     * Check if user has saved a specific kos
+     */
+    public function hasSavedKos($kosId)
+    {
+        return $this->savedKos()->where('kos_id', $kosId)->exists();
+    }
     protected function casts(): array
     {
         return [

@@ -1,4 +1,4 @@
-    * {
+* {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -22,7 +22,7 @@
         }
 
         .property-detail {
-            padding-top: 100px;
+            padding-top: 90px;
             padding-bottom: 40px;
             background: #f8f9fa;
         }
@@ -51,11 +51,9 @@
         .header h1 {
             color: #222;
             font-size: 1.5rem;
-        }
-
-        /* Breadcrumb */
+        }        /* Breadcrumb */
         .breadcrumb {
-            margin-bottom: -35px;
+            margin-bottom: -20px;
             padding: 12px 0;
         }
 
@@ -203,13 +201,11 @@
             color: #dc2626;
             font-size: 0.85rem;
             font-weight: 500;
-        }
-
-        .property-title {
+        }        .property-title {
             font-size: 2.5rem;
             font-weight: 700;
             color: #222;
-            margin: 40px 0 16px 0; /* Tambahkan margin-top */
+            margin: 20px 0 16px 0; /* Kurangi margin-top dari 40px ke 20px */
             line-height: 1.2;
         }
 
@@ -240,10 +236,7 @@
             padding-left: 0 !important; /* hapus padding kiri */
             text-align: left !important; /* ratakan kiri */
             display: block;  /* pastikan block supaya bisa margin/padding berfungsi */
-        }
-
-
-        /* Price Section */
+        }        /* Price Section */
         .price-section {
             text-align: right;
             padding: 24px;
@@ -252,7 +245,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             border: 1px solid #f1f5f9;
             height: fit-content;
-            margin-top: -50px;
+            margin-top: -30px;
         }
 
         .price-label {
@@ -601,6 +594,88 @@
         .btn-submit:hover {
             background: linear-gradient(135deg, #333 0%, #555 100%);
             transform: translateY(-1px);
+        }
+
+        /* Save Button Styles */
+        .title-with-save {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.save-button {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #999999; /* warna ikon default */
+}
+
+.save-button:hover i {
+    transform: scale(1.1);
+}
+
+.save-button.saved {
+    color: #000000;
+}
+
+.save-button i {
+    font-size: 20px;
+    transition: all 0.2s ease;
+}
+
+
+        /* Notification Styles */
+       
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .notification.fade-out {
+            animation: slideOutRight 0.3s ease forwards;
+        }
+
+        /* Responsive adjustments for save button */
+        @media (max-width: 768px) {
+            .title-with-save {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .save-button {
+                align-self: flex-end;
+                margin-top: -8px;
+            }
+
+            .property-title {
+                font-size: 2rem;
+            }
         }
 
         @keyframes fadeIn {

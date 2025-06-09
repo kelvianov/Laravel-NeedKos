@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\SavedKosController;
 
 Route::get('testimonials', [LandingController::class, 'testomonials'])->name('landing.testimonials');
 Route::get('/search', [LandingController::class, 'search'])->name('landing.search');
@@ -43,7 +44,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/settings', [ProfileController::class, 'settings'])->name('profile.settings');
     Route::post('/profile/settings/update', [ProfileController::class, 'updateSettings'])->name('profile.settings.update');
+    
+    // Saved Kos Routes
+    Route::get('/saved', [SavedKosController::class, 'index'])->name('saved.index');
+    Route::post('/kos/{id}/toggle-save', [SavedKosController::class, 'toggle'])->name('kos.toggle.save');
+    Route::get('/kos/{id}/check-saved', [SavedKosController::class, 'checkSaved'])->name('kos.check.saved');
 });
+
+Route::get('/test-saved', function () {
+    return view('test-saved');
+})->name('test.saved');
+
 Route::get('/help-center', [HelpController::class, 'index'])->name('help.center');
 Route::get('/help-center/search', [HelpController::class, 'search'])->name('help.search');
 

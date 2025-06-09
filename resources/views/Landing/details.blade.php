@@ -41,28 +41,33 @@
         <!-- Image Gallery -->
         <div class="image-gallery">
             <div class="main-image">
-                <img id="currentImage" src="{{ asset('storage/' . $kos->image[0]) }}" alt="{{ $kos->name }}">
+                <img id="currentImage" src="{{ asset('storage/' . $kos->image[0]) }}" alt="{{ $kos->name }}" width="480" height="320">
             </div>
             <div class="thumbnail-grid">
                 <div class="thumbnail-row">
                    @foreach(array_slice($kos->image, 0, 6) as $img)
-    <div class="thumbnail" style="cursor:pointer;">
-        <img src="{{ asset('storage/' . $img) }}" alt="Thumbnail">
-    </div>
+<div class="thumbnail" style="cursor:pointer;">
+    <img src="{{ asset('storage/' . $img) }}" alt="Thumbnail" width="80" height="54">
+</div>
 @endforeach
                 </div>
             </div>
-        </div>
-
-        <!-- Property Header -->
+        </div>        <!-- Property Header -->
         <div class="property-header">
-            <div class="property-info-left">                <div class="property-badges">
+            <div class="property-info-left">                
+                <div class="property-badges">
                     <span class="badge badge-type">
                         {{ $kos->gender_label ?? 'Kos' }}
                     </span>
                 </div>
 
-                <h1 class="property-title">{{ $kos->name }}</h1>
+                <div class="title-with-save">
+                    <h1 class="property-title">{{ $kos->name }}</h1>
+                      <!-- Save Button -->
+                    <button id="saveButton" class="save-button" onclick="toggleSave({{ $kos->id }})" title="Simpan properti ini">
+                        <i id="saveIcon" class="far fa-bookmark"></i>
+                    </button>
+                </div>
 
                 <div class="property-rating">
                     <div class="rating-stars">
@@ -354,36 +359,130 @@
     function prevPhoto() {
         currentPhotoIndex = (currentPhotoIndex - 1 + allPhotosFull.length) % allPhotosFull.length;
         document.getElementById('largePhoto').src = allPhotosFull[currentPhotoIndex];
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const mainImage = document.getElementById('currentImage');
-        const thumbnails = document.querySelectorAll('.thumbnail img');
-        thumbnails.forEach(thumb => {
-            thumb.addEventListener('click', () => {
-                mainImage.src = thumb.src;
+    }        document.addEventListener('DOMContentLoaded', function() {
+            const mainImage = document.getElementById('currentImage');
+            const thumbnails = document.querySelectorAll('.thumbnail img');
+            thumbnails.forEach(thumb => {
+                thumb.addEventListener('click', () => {
+                    mainImage.src = thumb.src;
+                });
             });
+
+            document.getElementById('photoModal').addEventListener('click', function(e) {
+                if (e.target === this) closePhotoModal();
+            });
+
+            document.getElementById('largePhotoView').addEventListener('click', function(e) {
+                if (e.target === this) closeLargeView();
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (document.getElementById('largePhotoView').classList.contains('active')) {
+                    if (e.key === 'ArrowRight') nextPhoto();
+                    if (e.key === 'ArrowLeft') prevPhoto();
+                    if (e.key === 'Escape') closeLargeView();
+                }
+                if (document.getElementById('photoModal').classList.contains('active')) {
+                    if (e.key === 'Escape') closePhotoModal();
+                }
+            });
+
+            // Check if this kos is already saved
+            checkSavedStatus();
         });
 
-        document.getElementById('photoModal').addEventListener('click', function(e) {
-            if (e.target === this) closePhotoModal();
-        });
+        // Save/Unsave functionality
+        function toggleSave(kosId) {
+            const saveButton = document.getElementById('saveButton');
+            const saveIcon = document.getElementById('saveIcon');
+            // Optimistic UI: langsung update icon
+            const wasSaved = saveButton.classList.contains('saved');
+            updateSaveButton(!wasSaved);
+            
+            // Check if user is logged in
+            @auth
+                // Disable button during request
+                saveButton.disabled = true;
+                
+                fetch(`/kos/${kosId}/toggle-save`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // updateSaveButton(data.saved); // Sudah dioptimistic, tidak perlu update ulang
+                })
+                .catch(error => {
+                    // Jika gagal, kembalikan ke status sebelumnya
+                    updateSaveButton(wasSaved);
+                })
+                .finally(() => {
+                    saveButton.disabled = false;
+                });
+            @else
+                // Redirect to login if not authenticated
+                showNotification('Silakan login terlebih dahulu untuk menyimpan properti.', 'info');
+                setTimeout(() => {
+                    window.location.href = '{{ route("login.show") }}';
+                }, 1500);
+            @endauth
+        }
 
-        document.getElementById('largePhotoView').addEventListener('click', function(e) {
-            if (e.target === this) closeLargeView();
-        });
+        function checkSavedStatus() {
+            @auth
+                fetch(`/kos/{{ $kos->id }}/check-saved`)
+                .then(response => response.json())
+                .then(data => {
+                    updateSaveButton(data.saved);
+                })
+                .catch(error => {
+                    console.error('Error checking saved status:', error);
+                });
+            @endauth
+        }
 
-        document.addEventListener('keydown', function(e) {
-            if (document.getElementById('largePhotoView').classList.contains('active')) {
-                if (e.key === 'ArrowRight') nextPhoto();
-                if (e.key === 'ArrowLeft') prevPhoto();
-                if (e.key === 'Escape') closeLargeView();
+        function updateSaveButton(isSaved) {
+            const saveIcon = document.getElementById('saveIcon');
+            const saveButton = document.getElementById('saveButton');
+              if (isSaved) {
+                saveIcon.className = 'fas fa-bookmark';
+                saveButton.classList.add('saved');
+                saveButton.title = 'Hapus dari simpanan';
+            } else {
+                saveIcon.className = 'far fa-bookmark';
+                saveButton.classList.remove('saved');
+                saveButton.title = 'Simpan properti ini';
             }
-            if (document.getElementById('photoModal').classList.contains('active')) {
-                if (e.key === 'Escape') closePhotoModal();
-            }
-        });
-    });
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            // Add to page
+            document.body.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Hide and remove notification
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
 </script>
  <script>
         let selectedRating = 0;

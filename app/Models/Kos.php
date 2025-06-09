@@ -31,6 +31,22 @@ class Kos extends Model
         return $this->belongsTo(User::class, 'user_id'); // relasi ke pemilik kos
     }
 
+    /**
+     * Get users who saved this kos
+     */
+    public function savedBy()
+    {
+        return $this->hasMany(SavedKos::class);
+    }
+
+    /**
+     * Get users who saved this kos (through pivot)
+     */
+    public function savedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'saved_kos', 'kos_id', 'user_id')->withTimestamps();
+    }
+
     public function getGenderLabelAttribute()
 {
     return match($this->gender) {
