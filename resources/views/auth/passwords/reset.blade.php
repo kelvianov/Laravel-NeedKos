@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Register - KosKu</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Reset Password - KosKu</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <style>
         * {
             box-sizing: border-box;
@@ -113,7 +113,18 @@
             transition: all 0.2s;
         }
 
-        .btn-register {
+        .form-input:focus {
+            outline: none;
+            border-color: #222;
+            box-shadow: 0 0 0 3px rgba(34, 34, 34, 0.1);
+        }
+
+        .form-input:read-only {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+
+        .btn-reset {
             width: 100%;
             padding: 14px;
             background: #222;
@@ -126,7 +137,7 @@
             transition: all 0.2s;
         }
 
-        .btn-register:hover {
+        .btn-reset:hover {
             background: #000;
             transform: translateY(-2px);
         }
@@ -143,7 +154,9 @@
             text-decoration: none;
             font-weight: 600;
             transition: color 0.2s;
-        }        .auth-links a:hover {
+        }
+
+        .auth-links a:hover {
             color: #000;
         }
 
@@ -177,82 +190,70 @@
     <div class="container">
         <div class="welcome-side">
             <div class="welcome-content">
-                <h1>Welcome to KosKu</h1>
-                <p>Gabung sekarang dan temukan hunian nyaman sesuai gayamu.</p>
+                <h1>Reset Password</h1>
+                <p>Create a new password to secure your KosKu account. Choose a strong password that you haven't used before.</p>
             </div>
-        </div>        <div class="auth-side">
-            <h2>Create Account</h2>
+        </div>
+
+        <div class="auth-side">
+            <h2>Create New Password</h2>
             
-            @if(session('error'))
-                <div class="error-message">{{ session('error') }}</div>
+            @if ($errors->any())
+                <div class="error-message">
+                    <strong>Ada masalah dengan data yang Anda masukkan:</strong>
+                    <ul style="margin: 8px 0 0 20px;">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             @endif
             
-            <form method="POST" action="{{ route('register') }}">
+            <form method="POST" action="{{ route('password.update') }}">
                 @csrf
-                <div class="form-group">
-                    <label class="form-label">Full Name</label>
-                    <input type="text" name="name" class="form-input" value="{{ old('name') }}" required>
-                    @error('name')
-                        <div class="error-message">{{ $message }}</div>
-                    @enderror
-                </div>
+                <input type="hidden" name="token" value="{{ $token }}">
 
                 <div class="form-group">
                     <label class="form-label">Email Address</label>
-                    <input type="email" name="email" class="form-input" value="{{ old('email') }}" required>
+                    <input type="email" 
+                           name="email" 
+                           class="form-input" 
+                           value="{{ $email ?? old('email') ?? request('email') }}" 
+                           required 
+                           readonly>
                     @error('email')
-                        <div class="error-message">{{ $message }}</div>
-                    @enderror
-                </div>                <div class="form-group">
-                    <label class="form-label">Role</label>
-                    <select id="role" name="role" class="form-input" required>
-                        <option value="">Pilih Role</option>
-                        <option value="tenant" {{ old('role') == 'tenant' ? 'selected' : '' }}>Penyewa Kos</option>
-                        <option value="owner" {{ old('role') == 'owner' ? 'selected' : '' }}>Pemilik Kos</option>
-                    </select>
-                    @error('role')
                         <div class="error-message">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-input" required>
+                    <label class="form-label">New Password</label>
+                    <input type="password" 
+                           name="password" 
+                           class="form-input" 
+                           required 
+                           placeholder="Enter your new password">
                     @error('password')
                         <div class="error-message">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Confirm Password</label>
-                    <input type="password" name="password_confirmation" class="form-input" required>
-                    @error('password_confirmation')
-                        <div class="error-message">{{ $message }}</div>
-                    @enderror
+                    <label class="form-label">Confirm New Password</label>
+                    <input type="password" 
+                           name="password_confirmation" 
+                           class="form-input" 
+                           required 
+                           placeholder="Confirm your new password">
                 </div>
 
-                <button type="submit" class="btn-register">Create Account</button>
+                <button type="submit" class="btn-reset">Reset Password</button>
             </form>
 
             <div class="auth-links">
-                Already have an account? <a href="{{ route('login') }}">Sign In</a>
+                Remembered your password? <a href="{{ route('login') }}">Sign In</a>
             </div>
         </div>
     </div>
-
-    <!-- Choices.js -->
-    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const element = document.getElementById('role');
-            if (element) {
-                new Choices(element, {
-                    searchEnabled: false,
-                    itemSelectText: '',
-                    shouldSort: false
-                });
-            }
-        });
-    </script>
 </body>
 </html>

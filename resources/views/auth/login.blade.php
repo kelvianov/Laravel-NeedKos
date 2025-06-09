@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login - KosKu</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
     <style>
@@ -51,7 +52,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('../images/modern-room.jpg');
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('../images/modernnnnnn-room.png');
             background-size: cover;
             background-position: center;
             z-index: 1;
@@ -215,47 +216,292 @@
         <div class="welcome-side">
             <div class="welcome-content">
                 <h1>Welcome to KosKu</h1>
-                <p>Find your perfect stay with our curated selection of premium accommodations. Login to access exclusive deals and personalized recommendations.</p>
+                <p>Temukan kos idealmu. Login untuk penawaran spesial dan rekomendasi pribadi.</p>
             </div>
         </div>
 
         <div class="auth-side">
-            <h2>Sign In</h2>
+            <h2 id="formTitle">Sign In</h2>
 
-            @if(session('error'))
-                <div class="error-message">{{ session('error') }}</div>
-            @endif
-
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
-                <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" name="email" class="form-input" value="{{ old('email') }}" required autofocus>
-                    @error('email')
-                        <div class="error-message">{{ $message }}</div>
-                    @enderror
+            <div id="loginFormSection">
+                @if(session('error'))
+                    <div class="error-message">{{ session('error') }}</div>
+                @endif
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" name="email" class="form-input" value="{{ old('email') }}" required autofocus>
+                        @error('email')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-input" required>
+                        @error('password')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="remember-forgot">
+                        <label><input type="checkbox" name="remember"> Remember me</label>
+                        <a href="#" id="forgotPasswordLink">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn-login">Sign In</button>
+                </form>
+                <div class="auth-links">
+                    Don't have an account? <a href="{{ route('register') }}">Sign Up</a>
+                </div>            </div>
+            
+            <!-- Forgot Password Section -->
+            <div id="forgotSection" style="display:none;">
+                <div id="forgotNotif"></div>
+                <form id="forgotForm" style="margin-top:24px;">
+                    <div class="form-group">
+                        <label class="form-label" for="forgotEmail">Email Address</label>
+                        <input type="email" id="forgotEmail" name="email" class="form-input" required autofocus>
+                    </div>
+                    <button type="submit" class="btn-login" id="sendResetBtn">Kirim Link Reset</button>
+                    <button type="button" class="btn-login" id="resendBtn" style="display:none;margin-top:10px;background:#000000;">Kirim Ulang Email</button>
+                </form>
+                <div class="auth-links" style="margin-top:18px;">
+                    <a href="#" id="backToLogin">&larr; Kembali ke Login</a>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-input" required>
-                    @error('password')
-                        <div class="error-message">{{ $message }}</div>
-                    @enderror
+            <!-- Reset Password Section -->
+            <div id="resetSection" style="display:none;">
+                <div id="resetNotif"></div>
+                <form id="resetForm" method="POST" action="{{ route('password.update') }}" style="margin-top:24px;">
+                    @csrf
+                    <input type="hidden" name="token" id="resetToken">
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="resetEmail">Email Address</label>
+                        <input type="email" id="resetEmail" name="email" class="form-input" readonly style="background:#f8f9fa;color:#666;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="newPassword">Password Baru</label>
+                        <input type="password" id="newPassword" name="password" class="form-input" required minlength="8">
+                        <small style="color:#666;font-size:0.8rem;">Minimal 8 karakter</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">Konfirmasi Password</label>
+                        <input type="password" id="confirmPassword" name="password_confirmation" class="form-input" required minlength="8">
+                    </div>
+                    
+                    <button type="submit" class="btn-login" id="resetSubmitBtn">Reset Password</button>
+                </form>
+                <div class="auth-links" style="margin-top:18px;">
+                    <a href="#" id="backToLoginFromReset">&larr; Kembali ke Login</a>
                 </div>
-
-                <div class="remember-forgot">
-                    <label><input type="checkbox" name="remember"> Remember me</label>
-                    <a href="#">Forgot password?</a>
-                </div>
-
-                <button type="submit" class="btn-login">Sign In</button>
-            </form>
-
-            <div class="auth-links">
-                Don't have an account? <a href="{{ route('register') }}">Sign Up</a>
             </div>
         </div>
-    </div>
+    </div>    <script>
+    const forgotLink = document.getElementById('forgotPasswordLink');
+    const loginFormSection = document.getElementById('loginFormSection');
+    const forgotSection = document.getElementById('forgotSection');
+    const resetSection = document.getElementById('resetSection');
+    const formTitle = document.getElementById('formTitle');
+    const backToLogin = document.getElementById('backToLogin');
+    const backToLoginFromReset = document.getElementById('backToLoginFromReset');
+    const forgotForm = document.getElementById('forgotForm');
+    const resetForm = document.getElementById('resetForm');
+    const forgotNotif = document.getElementById('forgotNotif');
+    const resetNotif = document.getElementById('resetNotif');
+    const sendResetBtn = document.getElementById('sendResetBtn');
+    const resendBtn = document.getElementById('resendBtn');
+    const resetSubmitBtn = document.getElementById('resetSubmitBtn');    let lastEmail = '';
+
+    // Check URL parameters on page load
+    window.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        const email = urlParams.get('email');
+        
+        if (token && email) {
+            // Show reset password form
+            showResetForm(token, email);
+        }
+
+        // Check for reset password errors from session
+        @if(session('status'))
+            resetNotif.innerHTML = '<div style="background:#f0fdf4;border-left:4px solid #22c55e;padding:12px 16px;margin-bottom:18px;color:#166534;border-radius:8px;font-size:0.97rem;">{{ session('status') }}</div>';
+            showLoginForm();
+        @endif
+
+        @if($errors->any() && request()->has('token'))
+            let errorHtml = '<div style="background:#fef2f2;border-left:4px solid #dc2626;padding:12px 16px;margin-bottom:18px;color:#991b1b;border-radius:8px;font-size:0.97rem;">';
+            @foreach ($errors->all() as $error)
+                errorHtml += '{{ $error }}<br>';
+            @endforeach
+            errorHtml += '</div>';
+            resetNotif.innerHTML = errorHtml;
+            
+            // Keep the reset form visible if there are errors
+            const token = urlParams.get('token');
+            const email = urlParams.get('email') || '{{ old('email') }}';
+            if (token) {
+                showResetForm(token, email);
+            }
+        @endif
+    });
+
+    function showLoginForm() {
+        loginFormSection.style.display = 'block';
+        forgotSection.style.display = 'none';
+        resetSection.style.display = 'none';
+        formTitle.textContent = 'Sign In';
+        forgotNotif.innerHTML = '';
+        resetNotif.innerHTML = '';
+        
+        // Clear URL parameters
+        history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    function showForgotForm() {
+        loginFormSection.style.display = 'none';
+        forgotSection.style.display = 'block';
+        resetSection.style.display = 'none';
+        formTitle.textContent = 'Reset Password';
+        forgotNotif.innerHTML = '';
+        resetNotif.innerHTML = '';
+        document.getElementById('forgotEmail').focus();
+    }
+
+    function showResetForm(token, email) {
+        loginFormSection.style.display = 'none';
+        forgotSection.style.display = 'none';
+        resetSection.style.display = 'block';
+        formTitle.textContent = 'Reset Password';
+        forgotNotif.innerHTML = '';
+        resetNotif.innerHTML = '';
+        
+        document.getElementById('resetToken').value = token;
+        document.getElementById('resetEmail').value = email;
+        document.getElementById('newPassword').focus();
+    }
+
+    forgotLink.onclick = function(e){
+        e.preventDefault();
+        showForgotForm();
+    }
+
+    backToLogin.onclick = function(e){
+        e.preventDefault();
+        showLoginForm();
+    }
+
+    backToLoginFromReset.onclick = function(e){
+        e.preventDefault();
+        showLoginForm();
+    }
+
+    function handleForgot(email) {
+        forgotNotif.innerHTML = '<div style="color:#666;">Memproses...</div>';
+        sendResetBtn.disabled = true;
+        resendBtn.disabled = true;
+        fetch('/password/email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ email })
+        })
+        .then(async r => {
+            let data;
+            try {
+                data = await r.json();
+            } catch (e) {                // Jika bukan JSON (redirect/HTML), anggap sukses jika status 200
+                if(r.status === 200) {
+                    forgotNotif.innerHTML = '<div style="background:#f0fdf4;border-left:4px solid #22c55e;padding:12px 16px;margin-bottom:18px;color:#166534;border-radius:8px;font-size:0.97rem;">Link reset password telah dikirim ke email Anda.</div>';
+                    sendResetBtn.style.display = 'none';
+                    resendBtn.style.display = 'block';
+                    lastEmail = email;
+                    return;
+                } else {
+                    forgotNotif.innerHTML = '<div style="background:#fef2f2;border-left:4px solid #dc2626;padding:12px 16px;margin-bottom:18px;color:#991b1b;border-radius:8px;font-size:0.97rem;">Email tidak tersedia.</div>';
+                    sendResetBtn.style.display = 'block';
+                    resendBtn.style.display = 'none';
+                    return;
+                }
+            }            if(data.status === 'success' || (data.message && data.message.match(/email telah dikirim|reset link/i))){
+                forgotNotif.innerHTML = '<div style="background:#f0fdf4;border-left:4px solid #22c55e;padding:12px 16px;margin-bottom:18px;color:#166534;border-radius:8px;font-size:0.97rem;">Link reset password telah dikirim ke email Anda.</div>';
+                sendResetBtn.style.display = 'none';
+                resendBtn.style.display = 'block';
+                lastEmail = email;
+            }else{
+                forgotNotif.innerHTML = '<div style="background:#fef2f2;border-left:4px solid #dc2626;padding:12px 16px;margin-bottom:18px;color:#991b1b;border-radius:8px;font-size:0.97rem;">'+(data.message || 'Email tidak tersedia.')+'</div>';
+                sendResetBtn.style.display = 'block';
+                resendBtn.style.display = 'none';
+            }
+        })        .catch(()=>{
+            forgotNotif.innerHTML = '<div style="background:#fef2f2;border-left:4px solid #dc2626;padding:12px 16px;margin-bottom:18px;color:#991b1b;border-radius:8px;font-size:0.97rem;">Email tidak tersedia.</div>';
+            sendResetBtn.style.display = 'block';
+            resendBtn.style.display = 'none';
+        })
+        .finally(()=>{
+            sendResetBtn.disabled = false;
+            resendBtn.disabled = false;
+        });
+    }
+
+    function handlePasswordReset() {
+        const password = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        // Clear previous notifications
+        resetNotif.innerHTML = '';
+        
+        // Validate passwords match
+        if (password !== confirmPassword) {
+            resetNotif.innerHTML = '<div style="background:#fef2f2;border-left:4px solid #dc2626;padding:12px 16px;margin-bottom:18px;color:#991b1b;border-radius:8px;font-size:0.97rem;">Password dan konfirmasi password tidak cocok.</div>';
+            return false;
+        }
+        
+        // Validate password length
+        if (password.length < 8) {
+            resetNotif.innerHTML = '<div style="background:#fef2f2;border-left:4px solid #dc2626;padding:12px 16px;margin-bottom:18px;color:#991b1b;border-radius:8px;font-size:0.97rem;">Password minimal 8 karakter.</div>';
+            return false;
+        }
+        
+        resetSubmitBtn.disabled = true;
+        resetSubmitBtn.textContent = 'Memproses...';
+        
+        return true;
+    }
+
+    forgotForm.onsubmit = function(e){
+        e.preventDefault();
+        const email = document.getElementById('forgotEmail').value;
+        handleForgot(email);
+    }
+
+    resetForm.onsubmit = function(e) {
+        if (!handlePasswordReset()) {
+            e.preventDefault();
+        }
+    }
+
+    resendBtn.onclick = function(){
+        if(lastEmail) handleForgot(lastEmail);
+    }
+
+    // Real-time password confirmation validation
+    document.getElementById('confirmPassword').addEventListener('input', function() {
+        const password = document.getElementById('newPassword').value;
+        const confirmPassword = this.value;
+        
+        if (confirmPassword && password !== confirmPassword) {
+            this.style.borderColor = '#dc2626';
+        } else {
+            this.style.borderColor = '#ddd';
+        }
+    });
+    </script>
 </body>
 </html>

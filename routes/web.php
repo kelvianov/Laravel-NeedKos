@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\SavedKosController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('testimonials', [LandingController::class, 'testomonials'])->name('landing.testimonials');
 Route::get('/search', [LandingController::class, 'search'])->name('landing.search');
@@ -78,3 +79,5 @@ Route::get('/careers', function () {
     return view('footercontent.company.careers');
 })->name('careers');
 
+// Password Reset Routes only (login/register handled by custom AuthController)
+Auth::routes(['login' => false, 'register' => false, 'reset' => true, 'verify' => false]);
