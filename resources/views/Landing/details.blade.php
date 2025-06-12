@@ -6,8 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Detail Kos - KosKu</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/detail.css') }}">
 </head>
@@ -86,9 +85,8 @@
 
             <div class="price-section">
                 <div class="price-label">Mulai dari</div>
-                <div class="price-main">IDR {{ number_format($kos->price, 0, ',', '.') }}</div>
-                <div class="price-period">/bulan</div>
-                <button class="book-button">Lihat kamar</button>
+                <div class="price-main">IDR {{ number_format($kos->price, 0, ',', '.') }}</div>                <div class="price-period">/bulan</div>
+                <button class="book-button">Lihat Kamar Tersedia</button>
             </div>
         </div>
 
@@ -96,11 +94,10 @@
         <nav class="property-nav">
             <div class="nav-tabs">
                 <button class="nav-tab active" onclick="showTab('info')">Info Umum</button>
-                <button class="nav-tab" onclick="showTab('review')">Review</button>
-                <button class="nav-tab" onclick="showTab('fasilitas')">Fasilitas Populer</button>
+                <button class="nav-tab" onclick="showTab('review')">Review</button>                <button class="nav-tab" onclick="showTab('fasilitas')">Fasilitas Terbaik</button>
                 <button class="nav-tab" onclick="showTab('lokasi')">Lokasi</button>
-                <button class="nav-tab" onclick="showTab('kebijakan')">Kebijakan Akomodasi</button>
-                <button class="nav-tab" onclick="showTab('tentang')">Tentang</button>
+                <button class="nav-tab" onclick="showTab('kebijakan')">Peraturan & Kebijakan</button>
+                <button class="nav-tab" onclick="showTab('tentang')">Tentang Hunian</button>
                 <button class="nav-tab" onclick="showTab('kamar')">Kamar</button>
             </div>
         </nav>
@@ -116,26 +113,21 @@
             <div class="contact-info">
                 <i class="fas fa-phone"></i>
                 <span>{{ $kos->contact_person }}</span>
-            </div>
-
-            <a href="#" class="action-button">
+            </div>            <a href="#" class="action-button">
                 <i class="fas fa-key"></i>
-                Ajukan Sewa
+                Booking Sekarang
             </a>
         </div>
 
-        <div class="content-section" id="review">
-            <div class="section-header">
-                <h3>Ulasan Penghuni</h3>
+        <div class="content-section" id="review">            <div class="section-header">
+                <h3>Review & Testimoni</h3>
                 @auth
                     <button class="add-review-btn" onclick="openModal()">
                         <i class="fas fa-plus"></i>
-                        Tambah Ulasan
-                    </button>
-                @else
+                        Tulis Review
+                    </button>                @else
                     <a class="add-review-btn" href="{{ route('login.show') }}">
-                        <i class="fas fa-plus"></i>
-                        Login untuk tambah ulasan
+                        Login untuk Review
                     </a>
                 @endauth
             </div>
@@ -147,9 +139,8 @@
 
         @auth
         <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-            <div class="modal" onclick="event.stopPropagation()">
-                <div class="modal-header">
-                    <h3 class="modal-title">Tambah Ulasan</h3>
+            <div class="modal" onclick="event.stopPropagation()">                <div class="modal-header">
+                    <h3 class="modal-title">Bagikan Pengalaman Anda</h3>
                     <button class="close-btn" onclick="closeModal()">&times;</button>
                 </div>
                 <form id="reviewForm" method="POST">
@@ -166,14 +157,12 @@
                             <i class="fas fa-star star" data-rating="4"></i>
                             <i class="fas fa-star star" data-rating="5"></i>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="reviewText">Ulasan</label>
-                        <textarea id="reviewText" class="form-textarea" placeholder="Tulis ulasan Anda..." required></textarea>
-                    </div>
-                    <div class="form-actions">
+                    </div>                    <div class="form-group">
+                        <label class="form-label" for="reviewText">Ceritakan pengalaman Anda</label>
+                        <textarea id="reviewText" class="form-textarea" placeholder="Bagikan pengalaman tinggal di kos ini..." required></textarea>
+                    </div>                    <div class="form-actions">
                         <button type="button" class="btn btn-cancel" onclick="closeModal()">Batal</button>
-                        <button type="submit" class="btn btn-submit">Kirim Ulasan</button>
+                        <button type="submit" class="btn btn-submit">Kirim Review</button>
                     </div>
                 </form>
             </div>
@@ -192,10 +181,8 @@
             'pool' => ['icon' => 'fas fa-swimming-pool', 'label' => 'Kolam Renang'],
             'gym' => ['icon' => 'fas fa-dumbbell', 'label' => 'Gym'],
         ];
-        @endphp
-
-        <div class="content-section" id="fasilitas">
-            <h3>Fasilitas Populer</h3>
+        @endphp        <div class="content-section" id="fasilitas">
+            <h3>Fasilitas Terbaik</h3>
             <div class="facilities-grid">
                 @foreach ($kos->facilities ?? [] as $facilityKey)
                     @if (isset($facilitiesList[$facilityKey]))
@@ -219,15 +206,11 @@
             </div>
             <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($kos->address) }}"
                target="_blank" class="btn-lihat-maps"></a>
-        </div>
-
-        <div class="content-section" id="kebijakan">
-            <h3>Kebijakan Akomodasi</h3>
+        </div>        <div class="content-section" id="kebijakan">
+            <h3>Peraturan & Kebijakan</h3>
             <p>{{ $kos->rules }}</p>
-        </div>
-
-        <div class="content-section" id="tentang">
-            <h3>Tentang Properti</h3>
+        </div>        <div class="content-section" id="tentang">
+            <h3>Tentang Hunian Ini</h3>
             <p>{{ $kos->description }}</p>
         </div>
 
@@ -279,6 +262,32 @@
     const galleryPhotos = allPhotosFull.slice(0, 6);
 
     let currentPhotoIndex = 0;
+
+    // Fungsi untuk menampilkan waktu real-time
+    function timeAgo(date) {
+        const now = new Date();
+        const diffMs = now - date;
+        const diffSeconds = Math.floor(diffMs / 1000);
+        const diffMinutes = Math.floor(diffSeconds / 60);
+        const diffHours = Math.floor(diffMinutes / 60);
+        const diffDays = Math.floor(diffHours / 24);
+        const diffMonths = Math.floor(diffDays / 30);
+        const diffYears = Math.floor(diffDays / 365);
+
+        if (diffSeconds < 60) {
+            return diffSeconds <= 5 ? 'Baru saja' : `${diffSeconds} detik yang lalu`;
+        } else if (diffMinutes < 60) {
+            return `${diffMinutes} menit yang lalu`;
+        } else if (diffHours < 24) {
+            return `${diffHours} jam yang lalu`;
+        } else if (diffDays < 30) {
+            return `${diffDays} hari yang lalu`;
+        } else if (diffMonths < 12) {
+            return `${diffMonths} bulan yang lalu`;
+        } else {
+            return `${diffYears} tahun yang lalu`;
+        }
+    }
 
     function showTab(tabName) {
         const sections = document.querySelectorAll('.content-section');
@@ -537,8 +546,7 @@
             }
         });
     </script>
-    <script>
-        // Fetch and render reviews from backend (paginated)
+    <script>        // Fetch and render reviews from backend (paginated)
         document.addEventListener('DOMContentLoaded', function() {
             fetch(`/reviews/{{ $kos->id }}`)
                 .then(response => response.json())
@@ -547,7 +555,7 @@
                     reviewsContainer.innerHTML = '';
                     const reviews = res.data || [];
                     if (reviews.length === 0) {
-                        reviewsContainer.innerHTML = '<div class="review-card"><p class="review-text">Belum ada ulasan.</p></div>';
+                        reviewsContainer.innerHTML = '<div class="review-card"><p class="review-text">Belum ada review. Jadilah yang pertama!</p></div>';
                         return;
                     }
                     reviews.forEach(review => {
@@ -555,11 +563,7 @@
                         for (let i = 1; i <= 5; i++) {
                             starsHtml += `<i class="${i <= review.rating ? 'fas' : 'far'} fa-star"></i>`;
                         }
-                        const date = new Date(review.created_at);
-                        const now = new Date();
-                        const diffMs = now - date;
-                        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-                        let dateText = diffDays === 0 ? 'Baru saja' : `${diffDays} hari yang lalu`;
+                        const dateText = timeAgo(new Date(review.created_at));
                         reviewsContainer.innerHTML += `
                             <div class="review-card">
                                 <div class="review-header">
@@ -575,18 +579,22 @@
                         `;
                     });
                 });
-        });
-
-        document.getElementById("reviewForm").addEventListener("submit", function (e) {
+        });        document.getElementById("reviewForm").addEventListener("submit", function (e) {
             e.preventDefault();
             // Ambil nama dari backend, bukan dari input
             const name = document.getElementById("reviewerName").value;
             const comment = document.getElementById("reviewText").value;
-            const rating = selectedRating;
-            if (!name || !comment || rating === 0) {
+            const rating = selectedRating;            if (!name || !comment || rating === 0) {
                 alert('Mohon lengkapi semua field dan berikan rating!');
                 return;
             }
+
+            // Tampilkan loading state pada tombol
+            const submitBtn = document.querySelector('.btn-submit');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+            submitBtn.disabled = true;
+
             fetch("/reviews", {
                 method: "POST",
                 headers: {
@@ -603,8 +611,7 @@
                 } catch (e) {
                     alert('Terjadi kesalahan pada server.');
                     return;
-                }
-                if (!response.ok) {
+                }                if (!response.ok) {
                     // Tampilkan error validasi dari backend
                     if (data.errors) {
                         let msg = Object.values(data.errors).map(arr => arr.join(', ')).join('\n');
@@ -612,18 +619,19 @@
                     } else {
                         alert('Terjadi kesalahan pada server.');
                     }
+                    // Reset tombol ke kondisi semula
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
                     return;
                 }
-                alert("Ulasan berhasil dikirim!");
                 // Reload reviews only (use .data)
                 fetch(`/reviews/{{ $kos->id }}`)
                     .then(response => response.json())
                     .then(res => {
                         const reviewsContainer = document.getElementById('reviews-container');
                         reviewsContainer.innerHTML = '';
-                        const reviews = res.data || [];
-                        if (reviews.length === 0) {
-                            reviewsContainer.innerHTML = '<div class="review-card"><p class="review-text">Belum ada ulasan.</p></div>';
+                        const reviews = res.data || [];                        if (reviews.length === 0) {
+                            reviewsContainer.innerHTML = '<div class="review-card"><p class="review-text">Belum ada review. Jadilah yang pertama!</p></div>';
                             return;
                         }
                         reviews.forEach(review => {
@@ -631,11 +639,7 @@
                             for (let i = 1; i <= 5; i++) {
                                 starsHtml += `<i class="${i <= review.rating ? 'fas' : 'far'} fa-star"></i>`;
                             }
-                            const date = new Date(review.created_at);
-                            const now = new Date();
-                            const diffMs = now - date;
-                            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-                            let dateText = diffDays === 0 ? 'Baru saja' : `${diffDays} hari yang lalu`;
+                            const dateText = timeAgo(new Date(review.created_at));
                             reviewsContainer.innerHTML += `
                                 <div class="review-card">
                                     <div class="review-header">
@@ -648,12 +652,17 @@
                                     </div>
                                     <p class="review-text">${review.comment}</p>
                                 </div>
-                            `;
-                        });
+                            `;                        });
                     });
+                // Reset tombol ke kondisi semula
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
                 closeModal();
             })
             .catch(error => {
+                // Reset tombol jika terjadi error
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
                 alert("Terjadi kesalahan");
                 console.error(error);
             });
