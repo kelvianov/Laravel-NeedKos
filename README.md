@@ -576,6 +576,7 @@ Mail::raw('Test email', function($msg) { $msg->to('test@example.com')->subject('
 
 </div>
 
+<<<<<<< HEAD
 <div align="center">
 
 **Built with ❤️ by [Kelvianov](https://github.com/kelvianov)**
@@ -583,3 +584,6 @@ Mail::raw('Test email', function($msg) { $msg->to('test@example.com')->subject('
 [⭐ Star this repository](https://github.com/kelvianov/Laravel-NeedKos/stargazers) | [🐛 Report Bug](https://github.com/kelvianov/Laravel-NeedKos/issues) | [💡 Request Feature](https://github.com/kelvianov/Laravel-NeedKos/issues)
 
 </div>
+=======
+
+>>>>>>> 52246edcd34ba8265a0d6a5052e9b969dfa54492
