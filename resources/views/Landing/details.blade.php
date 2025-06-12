@@ -6,7 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Detail Kos - KosKu</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/detail.css') }}">
 </head>
@@ -85,8 +86,9 @@
 
             <div class="price-section">
                 <div class="price-label">Mulai dari</div>
-                <div class="price-main">IDR {{ number_format($kos->price, 0, ',', '.') }}</div>                <div class="price-period">/bulan</div>
-                <button class="book-button">Lihat Kamar Tersedia</button>
+                <div class="price-main">IDR {{ number_format($kos->price, 0, ',', '.') }}</div>
+                <div class="price-period">/bulan</div>
+                <button class="book-button">Lihat kamar</button>
             </div>
         </div>
 
@@ -94,10 +96,11 @@
         <nav class="property-nav">
             <div class="nav-tabs">
                 <button class="nav-tab active" onclick="showTab('info')">Info Umum</button>
-                <button class="nav-tab" onclick="showTab('review')">Review</button>                <button class="nav-tab" onclick="showTab('fasilitas')">Fasilitas Terbaik</button>
+                <button class="nav-tab" onclick="showTab('review')">Review</button>
+                <button class="nav-tab" onclick="showTab('fasilitas')">Fasilitas Populer</button>
                 <button class="nav-tab" onclick="showTab('lokasi')">Lokasi</button>
-                <button class="nav-tab" onclick="showTab('kebijakan')">Peraturan & Kebijakan</button>
-                <button class="nav-tab" onclick="showTab('tentang')">Tentang Hunian</button>
+                <button class="nav-tab" onclick="showTab('kebijakan')">Kebijakan Akomodasi</button>
+                <button class="nav-tab" onclick="showTab('tentang')">Tentang</button>
                 <button class="nav-tab" onclick="showTab('kamar')">Kamar</button>
             </div>
         </nav>
@@ -113,21 +116,26 @@
             <div class="contact-info">
                 <i class="fas fa-phone"></i>
                 <span>{{ $kos->contact_person }}</span>
-            </div>            <a href="#" class="action-button">
+            </div>
+
+            <a href="#" class="action-button">
                 <i class="fas fa-key"></i>
-                Booking Sekarang
+                Ajukan Sewa
             </a>
         </div>
 
-        <div class="content-section" id="review">            <div class="section-header">
-                <h3>Review & Testimoni</h3>
+        <div class="content-section" id="review">
+            <div class="section-header">
+                <h3>Ulasan Penghuni</h3>
                 @auth
                     <button class="add-review-btn" onclick="openModal()">
                         <i class="fas fa-plus"></i>
-                        Tulis Review
-                    </button>                @else
+                        Tambah Ulasan
+                    </button>
+                @else
                     <a class="add-review-btn" href="{{ route('login.show') }}">
-                        Login untuk Review
+                        <i class="fas fa-plus"></i>
+                        Login untuk tambah ulasan
                     </a>
                 @endauth
             </div>
@@ -139,8 +147,9 @@
 
         @auth
         <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-            <div class="modal" onclick="event.stopPropagation()">                <div class="modal-header">
-                    <h3 class="modal-title">Bagikan Pengalaman Anda</h3>
+            <div class="modal" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <h3 class="modal-title">Tambah Ulasan</h3>
                     <button class="close-btn" onclick="closeModal()">&times;</button>
                 </div>
                 <form id="reviewForm" method="POST">
@@ -157,12 +166,14 @@
                             <i class="fas fa-star star" data-rating="4"></i>
                             <i class="fas fa-star star" data-rating="5"></i>
                         </div>
-                    </div>                    <div class="form-group">
-                        <label class="form-label" for="reviewText">Ceritakan pengalaman Anda</label>
-                        <textarea id="reviewText" class="form-textarea" placeholder="Bagikan pengalaman tinggal di kos ini..." required></textarea>
-                    </div>                    <div class="form-actions">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="reviewText">Ulasan</label>
+                        <textarea id="reviewText" class="form-textarea" placeholder="Tulis ulasan Anda..." required></textarea>
+                    </div>
+                    <div class="form-actions">
                         <button type="button" class="btn btn-cancel" onclick="closeModal()">Batal</button>
-                        <button type="submit" class="btn btn-submit">Kirim Review</button>
+                        <button type="submit" class="btn btn-submit">Kirim Ulasan</button>
                     </div>
                 </form>
             </div>
@@ -181,8 +192,10 @@
             'pool' => ['icon' => 'fas fa-swimming-pool', 'label' => 'Kolam Renang'],
             'gym' => ['icon' => 'fas fa-dumbbell', 'label' => 'Gym'],
         ];
-        @endphp        <div class="content-section" id="fasilitas">
-            <h3>Fasilitas Terbaik</h3>
+        @endphp
+
+        <div class="content-section" id="fasilitas">
+            <h3>Fasilitas Populer</h3>
             <div class="facilities-grid">
                 @foreach ($kos->facilities ?? [] as $facilityKey)
                     @if (isset($facilitiesList[$facilityKey]))
@@ -206,11 +219,15 @@
             </div>
             <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($kos->address) }}"
                target="_blank" class="btn-lihat-maps"></a>
-        </div>        <div class="content-section" id="kebijakan">
-            <h3>Peraturan & Kebijakan</h3>
+        </div>
+
+        <div class="content-section" id="kebijakan">
+            <h3>Kebijakan Akomodasi</h3>
             <p>{{ $kos->rules }}</p>
-        </div>        <div class="content-section" id="tentang">
-            <h3>Tentang Hunian Ini</h3>
+        </div>
+
+        <div class="content-section" id="tentang">
+            <h3>Tentang Properti</h3>
             <p>{{ $kos->description }}</p>
         </div>
 
@@ -555,7 +572,7 @@
                     reviewsContainer.innerHTML = '';
                     const reviews = res.data || [];
                     if (reviews.length === 0) {
-                        reviewsContainer.innerHTML = '<div class="review-card"><p class="review-text">Belum ada review. Jadilah yang pertama!</p></div>';
+                        reviewsContainer.innerHTML = '<div class="review-card"><p class="review-text">Belum ada ulasan.</p></div>';
                         return;
                     }
                     reviews.forEach(review => {
@@ -584,7 +601,8 @@
             // Ambil nama dari backend, bukan dari input
             const name = document.getElementById("reviewerName").value;
             const comment = document.getElementById("reviewText").value;
-            const rating = selectedRating;            if (!name || !comment || rating === 0) {
+            const rating = selectedRating;
+            if (!name || !comment || rating === 0) {
                 alert('Mohon lengkapi semua field dan berikan rating!');
                 return;
             }
@@ -630,8 +648,9 @@
                     .then(res => {
                         const reviewsContainer = document.getElementById('reviews-container');
                         reviewsContainer.innerHTML = '';
-                        const reviews = res.data || [];                        if (reviews.length === 0) {
-                            reviewsContainer.innerHTML = '<div class="review-card"><p class="review-text">Belum ada review. Jadilah yang pertama!</p></div>';
+                        const reviews = res.data || [];
+                        if (reviews.length === 0) {
+                            reviewsContainer.innerHTML = '<div class="review-card"><p class="review-text">Belum ada ulasan.</p></div>';
                             return;
                         }
                         reviews.forEach(review => {
