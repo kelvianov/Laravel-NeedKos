@@ -18,8 +18,10 @@
 </header>
 
 <!-- Detail Section -->
+<!-- Detail Section -->
 <section class="property-detail">
-    <div class="container">        <!-- Breadcrumb -->
+    <div class="container">
+        <!-- Breadcrumb -->
         <nav class="breadcrumb">
             <a href="#">Kos</a>
             <span class="breadcrumb-separator">></span>
@@ -45,14 +47,16 @@
             </div>
             <div class="thumbnail-grid">
                 <div class="thumbnail-row">
-                   @foreach(array_slice($kos->image, 0, 6) as $img)
-<div class="thumbnail" style="cursor:pointer;">
-    <img src="{{ asset('storage/' . $img) }}" alt="Thumbnail" width="80" height="54">
-</div>
-@endforeach
+                    @foreach(array_slice($kos->image, 0, 6) as $img)
+                        <div class="thumbnail" style="cursor:pointer;">
+                            <img src="{{ asset('storage/' . $img) }}" alt="Thumbnail" width="80" height="54">
+                        </div>
+                    @endforeach
                 </div>
             </div>
-        </div>        <!-- Property Header -->
+        </div>
+
+        <!-- Property Header -->
         <div class="property-header">
             <div class="property-info-left">                
                 <div class="property-badges">
@@ -63,7 +67,6 @@
 
                 <div class="title-with-save">
                     <h1 class="property-title">{{ $kos->name }}</h1>
-                      <!-- Save Button -->
                     <button id="saveButton" class="save-button" onclick="toggleSave({{ $kos->id }})" title="Simpan properti ini">
                         <i id="saveIcon" class="far fa-bookmark"></i>
                     </button>
@@ -80,7 +83,6 @@
 
                 <div class="property-location">{{ $kos->address }}</div>
             </div>
-            
 
             <div class="price-section">
                 <div class="price-label">Mulai dari</div>
@@ -107,7 +109,7 @@
         <div class="content-section active" id="info">
             <h3>Tentang {{ $kos->name }}</h3>
             <p>{{ $kos->description }}</p>
-            
+
             <h3>Peraturan Kos</h3>
             <p>{{ $kos->rules }}</p>
 
@@ -122,121 +124,102 @@
             </a>
         </div>
 
-           <div class="content-section" id="review">
-        <div class="section-header">
-            <h3>Ulasan Penghuni</h3>
-            @auth
-            <button class="add-review-btn" onclick="openModal()">
-                <i class="fas fa-plus"></i>
-                Tambah Ulasan
-            </button>
-            @else
-            <a class="add-review-btn" href="{{ route('login.show') }}">
-                <i class="fas fa-plus"></i>
-                Login untuk tambah ulasan
-            </a>
-            @endauth
-        </div>
-        <div id="reviews-container">
-            <!-- Reviews will be loaded here by JS -->
-        </div>
-        <div id="load-more-reviews-container" style="text-align:center;margin-top:16px;">
-            <button id="loadMoreReviewsBtn" style="display:none;" class="btn btn-secondary">Lihat Lebih Banyak</button>
-        </div>
-    </div>
-    @auth
-    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 class="modal-title">Tambah Ulasan</h3>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
+        <div class="content-section" id="review">
+            <div class="section-header">
+                <h3>Ulasan Penghuni</h3>
+                @auth
+                    <button class="add-review-btn" onclick="openModal()">
+                        <i class="fas fa-plus"></i>
+                        Tambah Ulasan
+                    </button>
+                @else
+                    <a class="add-review-btn" href="{{ route('login.show') }}">
+                        <i class="fas fa-plus"></i>
+                        Login untuk tambah ulasan
+                    </a>
+                @endauth
             </div>
-            
-           <form id="reviewForm" method="POST">
-                <div class="form-group">
-                    <label class="form-label" for="reviewerName">Nama</label>
-                    <input type="text" id="reviewerName" class="form-input" value="{{ Auth::user()->name }}" readonly>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Rating</label>
-                    <div class="star-rating" id="starRating">
-                        <i class="fas fa-star star" data-rating="1"></i>
-                        <i class="fas fa-star star" data-rating="2"></i>
-                        <i class="fas fa-star star" data-rating="3"></i>
-                        <i class="fas fa-star star" data-rating="4"></i>
-                        <i class="fas fa-star star" data-rating="5"></i>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label" for="reviewText">Ulasan</label>
-                    <textarea id="reviewText" class="form-textarea" placeholder="Tulis ulasan Anda..." required></textarea>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="button" class="btn btn-cancel" onclick="closeModal()">Batal</button>
-                    <button type="submit" class="btn btn-submit">Kirim Ulasan</button>
-                </div>
-            </form>
+            <div id="reviews-container"></div>
+            <div id="load-more-reviews-container" style="text-align:center;margin-top:16px;">
+                <button id="loadMoreReviewsBtn" style="display:none;" class="btn btn-secondary">Lihat Lebih Banyak</button>
+            </div>
         </div>
-    </div>
-    @endauth
-         
-        </div>
-    @php
-    // Mapping fasilitas ke icon dan label
-    $facilitiesList = [
-        'wifi' => ['icon' => 'fas fa-wifi', 'label' => 'WiFi Gratis'],
-        'shower' => ['icon' => 'fas fa-shower', 'label' => 'Kamar Mandi Dalam'],
-        'parking' => ['icon' => 'fas fa-car', 'label' => 'Parkir'],
-        'ac' => ['icon' => 'fas fa-fan', 'label' => 'AC'],
-        'kitchen' => ['icon' => 'fas fa-utensils', 'label' => 'Dapur Bersama'],
-        'security' => ['icon' => 'fas fa-shield-alt', 'label' => 'Keamanan 24 Jam'],
-        'laundry' => ['icon' => 'fas fa-soap', 'label' => 'Laundry'],
-        'pool' => ['icon' => 'fas fa-swimming-pool', 'label' => 'Kolam Renang'],
-         'gym' => ['icon' => 'fas fa-dumbbell', 'label' => 'Gym'],
-    ];
-@endphp
 
-<div class="content-section" id="fasilitas">
-    <h3>Fasilitas Populer</h3>
-    <div class="facilities-grid">
-        @foreach ($kos->facilities ?? [] as $facilityKey)
-            @if (isset($facilitiesList[$facilityKey]))
-                <div class="facility-item">
-                    <i class="{{ $facilitiesList[$facilityKey]['icon'] }}"></i>
-                    <span>{{ $facilitiesList[$facilityKey]['label'] }}</span>
+        @auth
+        <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+            <div class="modal" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <h3 class="modal-title">Tambah Ulasan</h3>
+                    <button class="close-btn" onclick="closeModal()">&times;</button>
                 </div>
-            @endif
-        @endforeach
-    </div>
-</div>
+                <form id="reviewForm" method="POST">
+                    <div class="form-group">
+                        <label class="form-label" for="reviewerName">Nama</label>
+                        <input type="text" id="reviewerName" class="form-input" value="{{ Auth::user()->name }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Rating</label>
+                        <div class="star-rating" id="starRating">
+                            <i class="fas fa-star star" data-rating="1"></i>
+                            <i class="fas fa-star star" data-rating="2"></i>
+                            <i class="fas fa-star star" data-rating="3"></i>
+                            <i class="fas fa-star star" data-rating="4"></i>
+                            <i class="fas fa-star star" data-rating="5"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="reviewText">Ulasan</label>
+                        <textarea id="reviewText" class="form-textarea" placeholder="Tulis ulasan Anda..." required></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-cancel" onclick="closeModal()">Batal</button>
+                        <button type="submit" class="btn btn-submit">Kirim Ulasan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        @endauth
+
+        @php
+        $facilitiesList = [
+            'wifi' => ['icon' => 'fas fa-wifi', 'label' => 'WiFi Gratis'],
+            'shower' => ['icon' => 'fas fa-shower', 'label' => 'Kamar Mandi Dalam'],
+            'parking' => ['icon' => 'fas fa-car', 'label' => 'Parkir'],
+            'ac' => ['icon' => 'fas fa-fan', 'label' => 'AC'],
+            'kitchen' => ['icon' => 'fas fa-utensils', 'label' => 'Dapur Bersama'],
+            'security' => ['icon' => 'fas fa-shield-alt', 'label' => 'Keamanan 24 Jam'],
+            'laundry' => ['icon' => 'fas fa-soap', 'label' => 'Laundry'],
+            'pool' => ['icon' => 'fas fa-swimming-pool', 'label' => 'Kolam Renang'],
+            'gym' => ['icon' => 'fas fa-dumbbell', 'label' => 'Gym'],
+        ];
+        @endphp
+
+        <div class="content-section" id="fasilitas">
+            <h3>Fasilitas Populer</h3>
+            <div class="facilities-grid">
+                @foreach ($kos->facilities ?? [] as $facilityKey)
+                    @if (isset($facilitiesList[$facilityKey]))
+                        <div class="facility-item">
+                            <i class="{{ $facilitiesList[$facilityKey]['icon'] }}"></i>
+                            <span>{{ $facilitiesList[$facilityKey]['label'] }}</span>
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        </div>
 
         <div class="content-section" id="lokasi">
-    <h3>Lokasi</h3>
-    <p><i class="fas fa-map-marker-alt"></i> {{ $kos->address }}</p>
-
-
-    <div class="map-container" style="margin-top: 24px; border-radius: 12px; overflow: hidden;">
-        <iframe 
-            src="https://www.google.com/maps?q={{ urlencode($kos->address) }}&output=embed"
-            width="100%" 
-            height="350" 
-            frameborder="0" 
-            style="border:0;" 
-            allowfullscreen="" 
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
-    </div>
-
-    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($kos->address) }}"
-   target="_blank"
-   class="btn-lihat-maps">
-  
-</a>
-</div>
+            <h3>Lokasi</h3>
+            <p><i class="fas fa-map-marker-alt"></i> {{ $kos->address }}</p>
+            <div class="map-container" style="margin-top: 24px; border-radius: 12px; overflow: hidden;">
+                <iframe src="https://www.google.com/maps?q={{ urlencode($kos->address) }}&output=embed"
+                        width="100%" height="350" frameborder="0" style="border:0;" allowfullscreen=""
+                        loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($kos->address) }}"
+               target="_blank" class="btn-lihat-maps"></a>
+        </div>
 
         <div class="content-section" id="kebijakan">
             <h3>Kebijakan Akomodasi</h3>
@@ -253,7 +236,7 @@
             <p>Status: <strong>{{ $kos->status ?? 'Tersedia' }}</strong></p>
             <p>Harga: <strong>Rp {{ number_format($kos->price, 0, ',', '.') }}/bulan</strong></p>
         </div>
-    </div>
+    </div> <!-- Penutup div.container -->
 </section>
 
 <!-- Photo Modal -->
