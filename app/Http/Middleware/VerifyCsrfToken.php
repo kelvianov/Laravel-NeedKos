@@ -15,6 +15,10 @@ class VerifyCsrfToken
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Disable CSRF for /reviews POST for AJAX
+        if ($request->is('reviews') && $request->isMethod('post')) {
+            return $next($request);
+        }
         return $next($request);
     }
 }

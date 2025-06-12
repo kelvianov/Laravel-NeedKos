@@ -125,35 +125,27 @@
            <div class="content-section" id="review">
         <div class="section-header">
             <h3>Ulasan Penghuni</h3>
+            @auth
             <button class="add-review-btn" onclick="openModal()">
                 <i class="fas fa-plus"></i>
                 Tambah Ulasan
             </button>
+            @else
+            <a class="add-review-btn" href="{{ route('login.show') }}">
+                <i class="fas fa-plus"></i>
+                Login untuk tambah ulasan
+            </a>
+            @endauth
         </div>
-        
         <div id="reviews-container">
-            <div class="review-card">
-                <div class="review-header">
-                    <img src="https://ui-avatars.com/api/?name=Andi&background=222222&color=ffffff&size=48"
-                         alt="Andi"
-                         class="reviewer-avatar">
-                    <div class="reviewer-info">
-                        <h4>Andi</h4>
-                        <div class="review-stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                    </div>
-                    <div class="review-date">2 hari yang lalu</div>
-                </div>
-                <p class="review-text">Kos nyaman, fasilitas lengkap, dan pemilik ramah. Lokasi strategis dekat kampus.</p>
-            </div>
+            <!-- Reviews will be loaded here by JS -->
+        </div>
+        <div id="load-more-reviews-container" style="text-align:center;margin-top:16px;">
+            <button id="loadMoreReviewsBtn" style="display:none;" class="btn btn-secondary">Lihat Lebih Banyak</button>
         </div>
     </div>
-                     <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    @auth
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
         <div class="modal" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h3 class="modal-title">Tambah Ulasan</h3>
@@ -163,7 +155,7 @@
            <form id="reviewForm" method="POST">
                 <div class="form-group">
                     <label class="form-label" for="reviewerName">Nama</label>
-                    <input type="text" id="reviewerName" class="form-input" placeholder="Masukkan nama Anda" required>
+                    <input type="text" id="reviewerName" class="form-input" value="{{ Auth::user()->name }}" readonly>
                 </div>
                 
                 <div class="form-group">
@@ -188,7 +180,8 @@
                 </div>
             </form>
         </div>
-   
+    </div>
+    @endauth
          
         </div>
     @php
@@ -485,7 +478,7 @@
         }
 </script>
  <script>
-        let selectedRating = 0;
+    let selectedRating = 0;
 
         // Star rating functionality
         document.querySelectorAll('.star').forEach(star => {
@@ -554,47 +547,6 @@
             closeModal();
         });
 
-        function addNewReview(name, rating, text) {
-            const reviewsContainer = document.getElementById('reviews-container');
-            
-            // Generate stars HTML
-            let starsHtml = '';
-            for (let i = 1; i <= 5; i++) {
-                if (i <= rating) {
-                    starsHtml += '<i class="fas fa-star"></i>';
-                } else {
-                    starsHtml += '<i class="far fa-star"></i>';
-                }
-            }
-
-            // Create new review card
-            const newReviewHtml = `
-                <div class="review-card" style="animation: slideIn 0.5s ease;">
-                    <div class="review-header">
-                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=222222&color=ffffff&size=48"
-                             alt="${name}"
-                             class="reviewer-avatar">
-                        <div class="reviewer-info">
-                            <h4>${name}</h4>
-                            <div class="review-stars">
-                                ${starsHtml}
-                            </div>
-                        </div>
-                        <div class="review-date">Baru saja</div>
-                    </div>
-                    <p class="review-text">${text}</p>
-                </div>
-            `;
-
-            // Add new review at the beginning
-            reviewsContainer.insertAdjacentHTML('afterbegin', newReviewHtml);
-            
-            // Show success message (optional)
-            setTimeout(() => {
-                alert('Ulasan berhasil ditambahkan!');
-            }, 100);
-        }
-
         // Close modal with Escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
@@ -603,32 +555,126 @@
         });
     </script>
     <script>
+        // Fetch and render reviews from backend (paginated)
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch(`/reviews/{{ $kos->id }}`)
+                .then(response => response.json())
+                .then(res => {
+                    const reviewsContainer = document.getElementById('reviews-container');
+                    reviewsContainer.innerHTML = '';
+                    const reviews = res.data || [];
+                    if (reviews.length === 0) {
+                        reviewsContainer.innerHTML = '<div class="review-card"><p class="review-text">Belum ada ulasan.</p></div>';
+                        return;
+                    }
+                    reviews.forEach(review => {
+                        let starsHtml = '';
+                        for (let i = 1; i <= 5; i++) {
+                            starsHtml += `<i class="${i <= review.rating ? 'fas' : 'far'} fa-star"></i>`;
+                        }
+                        const date = new Date(review.created_at);
+                        const now = new Date();
+                        const diffMs = now - date;
+                        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                        let dateText = diffDays === 0 ? 'Baru saja' : `${diffDays} hari yang lalu`;
+                        reviewsContainer.innerHTML += `
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(review.name)}&background=222222&color=ffffff&size=48" alt="${review.name}" class="reviewer-avatar">
+                                    <div class="reviewer-info">
+                                        <h4>${review.name}</h4>
+                                        <div class="review-stars">${starsHtml}</div>
+                                    </div>
+                                    <div class="review-date">${dateText}</div>
+                                </div>
+                                <p class="review-text">${review.comment}</p>
+                            </div>
+                        `;
+                    });
+                });
+        });
+
         document.getElementById("reviewForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const name = document.getElementById("reviewerName").value;
-    const comment = document.getElementById("reviewText").value;
-    const rating = document.querySelectorAll(".star.selected").length;
-
-    fetch("/reviews", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-        },
-        body: JSON.stringify({ name, comment, rating })
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert("Ulasan berhasil dikirim!");
-        location.reload(); // refresh agar muncul ulasan baru
-    })
-    .catch(error => {
-        alert("Terjadi kesalahan");
-        console.error(error);
-    });
-});
-
+            e.preventDefault();
+            // Ambil nama dari backend, bukan dari input
+            const name = document.getElementById("reviewerName").value;
+            const comment = document.getElementById("reviewText").value;
+            const rating = selectedRating;
+            if (!name || !comment || rating === 0) {
+                alert('Mohon lengkapi semua field dan berikan rating!');
+                return;
+            }
+            fetch("/reviews", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                },
+                body: JSON.stringify({ name, comment, rating, kos_id: {{ $kos->id }} })
+            })
+            .then(async response => {
+                let text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    alert('Terjadi kesalahan pada server.');
+                    return;
+                }
+                if (!response.ok) {
+                    // Tampilkan error validasi dari backend
+                    if (data.errors) {
+                        let msg = Object.values(data.errors).map(arr => arr.join(', ')).join('\n');
+                        alert(msg);
+                    } else {
+                        alert('Terjadi kesalahan pada server.');
+                    }
+                    return;
+                }
+                alert("Ulasan berhasil dikirim!");
+                // Reload reviews only (use .data)
+                fetch(`/reviews/{{ $kos->id }}`)
+                    .then(response => response.json())
+                    .then(res => {
+                        const reviewsContainer = document.getElementById('reviews-container');
+                        reviewsContainer.innerHTML = '';
+                        const reviews = res.data || [];
+                        if (reviews.length === 0) {
+                            reviewsContainer.innerHTML = '<div class="review-card"><p class="review-text">Belum ada ulasan.</p></div>';
+                            return;
+                        }
+                        reviews.forEach(review => {
+                            let starsHtml = '';
+                            for (let i = 1; i <= 5; i++) {
+                                starsHtml += `<i class="${i <= review.rating ? 'fas' : 'far'} fa-star"></i>`;
+                            }
+                            const date = new Date(review.created_at);
+                            const now = new Date();
+                            const diffMs = now - date;
+                            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                            let dateText = diffDays === 0 ? 'Baru saja' : `${diffDays} hari yang lalu`;
+                            reviewsContainer.innerHTML += `
+                                <div class="review-card">
+                                    <div class="review-header">
+                                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(review.name)}&background=222222&color=ffffff&size=48" alt="${review.name}" class="reviewer-avatar">
+                                        <div class="reviewer-info">
+                                            <h4>${review.name}</h4>
+                                            <div class="review-stars">${starsHtml}</div>
+                                        </div>
+                                        <div class="review-date">${dateText}</div>
+                                    </div>
+                                    <p class="review-text">${review.comment}</p>
+                                </div>
+                            `;
+                        });
+                    });
+                closeModal();
+            })
+            .catch(error => {
+                alert("Terjadi kesalahan");
+                console.error(error);
+            });
+        });
     </script>
 </body>
 </html>

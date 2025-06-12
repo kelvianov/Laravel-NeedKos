@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\SavedKosController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('testimonials', [LandingController::class, 'testomonials'])->name('landing.testimonials');
@@ -51,6 +52,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/kos/{id}/toggle-save', [SavedKosController::class, 'toggle'])->name('kos.toggle.save');
     Route::get('/kos/{id}/check-saved', [SavedKosController::class, 'checkSaved'])->name('kos.check.saved');
 });
+
+// Review Routes
+Route::get('/reviews/{kos_id}', [ReviewController::class, 'index']);
+Route::post('/reviews', [ReviewController::class, 'store']);
 
 Route::get('/test-saved', function () {
     return view('test-saved');
