@@ -377,23 +377,37 @@ window.addEventListener('load', () => {
   if (!heroTitle) return;
   setTimeout(() => {
     const before = 'Cari Kos ';
-    const impian = 'Impianmu';
-    const after = ' ';
-
+    const words = ['Impianmu', 'Nyaman', 'Favorit', 'Terbaik', 'Hemat'];
+    let wordIndex = 0;
+    function typeWord(word, cb) {
+      let j = 0;
+      function typeLetter() {
+        heroTitle.innerHTML = before + '<span style="color:#fbbf24; font-weight:inherit; background:none;">' + word.slice(0, j) + '</span>';
+        if (j < word.length) {
+          j++;
+          setTimeout(typeLetter, 70);
+        } else {
+          setTimeout(cb, 1200);
+        }
+      }
+      typeLetter();
+    }
+    function loopWords() {
+      wordIndex = (wordIndex + 1) % words.length;
+      typeWord(words[wordIndex], loopWords);
+    }
+    // Typewriter animasi pertama kali
     let i = 0;
-    function type() {
+    function typeFirst() {
       if (i <= before.length) {
         heroTitle.innerHTML = before.slice(0, i);
-      } else if (i <= before.length + impian.length) {
-        heroTitle.innerHTML = before + '<span style="color:#fbbf24; font-weight:inherit; background:none;">' + impian.slice(0, i-before.length) + '</span>';
+        i++;
+        setTimeout(typeFirst, 80);
       } else {
-        heroTitle.innerHTML = before + '<span style="color:#fbbf24; font-weight:inherit; background:none;">' + impian + '</span>' + after;
-        return;
+        typeWord(words[0], loopWords);
       }
-      i++;
-      setTimeout(type, 80);
     }
-    type();
+    typeFirst();
   }, 1000);
 });
 </script>
