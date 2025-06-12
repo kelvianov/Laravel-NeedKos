@@ -1,9 +1,47 @@
 <nav class="nav-modern">
-    <div class="nav-container">
-        <!-- Logo -->
+    <div class="nav-container">        <!-- Logo -->
         <a href="{{ url('/') }}" class="nav-logo">
             <span class="logo-text">KosKu</span>
         </a>
+
+        <!-- Search Container -->
+        <div class="nav-search-container">
+            <form action="{{ route('landing.search') }}" method="GET" class="nav-search-form">
+                <div class="nav-search-input-container">                    <input 
+                        type="text" 
+                        name="query"
+                        class="nav-search-input" 
+                        placeholder="Cari lokasi..."
+                        value="{{ request('query') ?? '' }}"
+                        autocomplete="off"
+                        id="nav-search-input"
+                    >
+                    <div class="nav-city-suggestions">
+                        @isset($locations)
+                            @foreach($locations as $city)
+                                <div class="nav-city-header" data-city-header="{{ $city['name'] }}">
+                                    <div class="nav-city-suggestion" data-city="{{ $city['name'] }}" data-type="city">
+                                        <i class="fas fa-city"></i> {{ $city['name'] }}
+                                    </div>
+                                    @foreach($city['areas'] as $area)
+                                        <div class="nav-city-suggestion nav-area-suggestion" 
+                                             data-city="{{ $area['name'] }}" 
+                                             data-type="area"
+                                             data-parent="{{ $city['name'] }}">
+                                            <i class="fas fa-map-marker-alt"></i> {{ $area['name'] }}
+                                            <span class="nav-area-city">{{ $city['name'] }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+                        @endisset
+                    </div>
+                </div>
+                <button type="submit" class="nav-search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
 
         <!-- Menu -->
         <ul class="nav-menu">
@@ -68,11 +106,12 @@
     padding: 0 1.5rem;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 1rem;
 }
 
 .nav-logo {
     text-decoration: none;
+    flex-shrink: 0;
 }
 
 .logo-text {
@@ -82,6 +121,12 @@
     letter-spacing: -0.5px;
 }
 
+/* --- Search Container - Right after logo --- */
+.nav-search-container {
+    flex: 0 0 350px;
+    margin-left: 1.5rem;
+}
+
 .nav-menu {
     display: flex;
     align-items: center;
@@ -89,7 +134,8 @@
     margin: 0;
     padding: 0;
     list-style: none;
-    margin-left: 10rem;
+    flex-shrink: 0;
+    margin-left: 2rem;
 }
 
 .nav-link {
@@ -105,12 +151,156 @@
     color: #000;
 }
 
+/* --- Search Container - Right after logo --- */
+.nav-search-container {
+    flex: 0 0 350px;
+    margin-left: 1.5rem;
+}
+
+.nav-search-form {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.nav-search-input-container {
+    position: relative;
+    flex: 1;
+}
+
+.nav-search-input {
+    width: 100%;
+    padding: 10px 16px;
+    padding-right: 45px;
+    border: 1px solid #e1e5e9;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    color: #333;
+    background: #f8f9fa;
+    transition: all 0.2s ease;
+}
+
+.nav-search-input:focus {
+    outline: none;
+    border-color: #e1e5e9;
+    background: #fff;
+}
+
+/* Placeholder slide animation */
+.nav-search-input.placeholder-slide-out {
+    animation: slideOut 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.nav-search-input.placeholder-slide-in {
+    animation: slideIn 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes slideOut {
+    0% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-12px);
+        opacity: 0;
+    }
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateY(12px);
+        opacity: 0;
+    }
+    60% {
+        transform: translateY(-2px);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+.nav-search-btn {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #222;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-search-btn:hover {
+    background: #000;
+}
+
+.nav-city-suggestions {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    border: 1px solid #e1e5e9;
+}
+
+.nav-city-header {
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.nav-city-header:last-child {
+    border-bottom: none;
+}
+
+.nav-city-suggestion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.nav-city-suggestion:hover,
+.nav-city-suggestion.active {
+    background: #f8f9fa;
+}
+
+.nav-city-suggestion i {
+    color: #666;
+    width: 16px;
+    text-align: center;
+}
+
+.nav-area-suggestion {
+    padding-left: 32px;
+}
+
+.nav-area-city {
+    margin-left: auto;
+    font-size: 0.8rem;
+    color: #999;
+}
+
 /* --- Right Side: Profile / Auth --- */
 .nav-end {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    min-width: 250px; /* ✅ kunci untuk stabil */
+    flex-shrink: 0;
+    margin-left: auto;
 }
 
 .nav-profile {
@@ -263,10 +453,195 @@ button.dropdown-item {
     background: #000;
 }
 
+@media (max-width: 1024px) {
+    .nav-search-container {
+        flex: 0 0 280px;
+        margin-left: 1rem;
+    }
+    
+    .nav-menu {
+        gap: 1.5rem;
+    }
+}
+
 /* Mobile */
 @media (max-width: 768px) {
+    .nav-container {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
     .nav-menu {
         display: none;
     }
+    
+    .nav-search-container {
+        order: 3;
+        width: 100%;
+        margin: 0.5rem 0 0 0;
+        flex: none;
+    }
+    
+    .nav-end {
+        margin-left: auto;
+    }
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navSearchForm = document.querySelector('.nav-search-form');
+    const navSearchInput = document.querySelector('.nav-search-input');
+    const navCitySuggestions = document.querySelector('.nav-city-suggestions');
+    const navCityItems = document.querySelectorAll('.nav-city-suggestion');
+    let currentFocus = -1;
+
+    if (!navSearchInput || !navCitySuggestions) return;    // Show suggestions on input focus
+    navSearchInput.addEventListener('focus', () => {
+        navSearchForm.classList.add('focused');
+        // Comment out location suggestions display
+        // if (navSearchInput.value.length > 0) {
+        //     filterNavLocations(navSearchInput.value);
+        // }
+        // navCitySuggestions.style.display = 'block';
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!navSearchForm.contains(e.target)) {
+            navCitySuggestions.style.display = 'none';
+        }
+    });
+
+    // Handle keyboard navigation
+    navSearchInput.addEventListener('keydown', (e) => {
+        const activeItems = [...navCityItems].filter(item => item.style.display !== 'none');
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            currentFocus++;
+            addActiveNav(activeItems);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            currentFocus--;
+            addActiveNav(activeItems);
+        } else if (e.key === 'Enter' && currentFocus > -1) {
+            e.preventDefault();
+            if (activeItems[currentFocus]) {
+                activeItems[currentFocus].click();
+            }
+        }
+    });    // Filter locations as user types
+    navSearchInput.addEventListener('input', (e) => {
+        // Comment out location filtering and suggestions display
+        // filterNavLocations(e.target.value);
+        // currentFocus = -1;
+    });
+
+    // Handle location selection
+    navCityItems.forEach(item => {
+        item.addEventListener('click', () => {
+            navSearchInput.value = item.dataset.city;
+            navCitySuggestions.style.display = 'none';
+            navSearchForm.submit();
+        });
+    });
+
+    function addActiveNav(items) {
+        removeActiveNav(items);
+        if (currentFocus >= items.length) currentFocus = 0;
+        if (currentFocus < 0) currentFocus = items.length - 1;
+        if (items[currentFocus]) {
+            items[currentFocus].classList.add('active');
+            items[currentFocus].scrollIntoView({ block: 'nearest' });
+        }
+    }
+
+    function removeActiveNav(items) {
+        items.forEach(item => item.classList.remove('active'));
+    }
+
+    function filterNavLocations(query) {
+        const q = query.toLowerCase();
+        let hasMatches = false;
+
+        navCityItems.forEach(item => {
+            const location = item.dataset.city.toLowerCase();
+            const type = item.dataset.type;
+            const isMatch = location.includes(q);
+
+            if (isMatch) {
+                item.style.display = 'flex';
+                if (type === 'area') {
+                    const cityHeader = document.querySelector(`[data-city-header="${item.dataset.parent}"]`);
+                    if (cityHeader) cityHeader.style.display = 'block';
+                }
+                hasMatches = true;
+            } else {
+                item.style.display = 'none';
+            }
+        });        navCitySuggestions.style.display = hasMatches ? 'block' : 'none';
+    }    // Rotating placeholder text with slide down animation (like Tiket.com)
+    const placeholderTexts = [
+        "Kos dekat kampus",
+        "Hunian terjangkau",
+        "Kos putra & putri",
+        "Fasilitas lengkap",
+        "Lokasi strategis",
+        "Kos nyaman & aman",
+        "Cari kos Jakarta..."
+    ];
+    
+    let currentPlaceholderIndex = 0;
+    let slideInterval;
+      function slidePlaceholder() {
+        if (!navSearchInput || navSearchInput.matches(':focus') || navSearchInput.value !== '') {
+            return;
+        }
+        
+        // Add slide-out class
+        navSearchInput.classList.add('placeholder-slide-out');
+        
+        setTimeout(() => {
+            // Change text
+            navSearchInput.placeholder = placeholderTexts[currentPlaceholderIndex];
+            currentPlaceholderIndex = (currentPlaceholderIndex + 1) % placeholderTexts.length;
+            
+            // Remove slide-out and add slide-in
+            navSearchInput.classList.remove('placeholder-slide-out');
+            navSearchInput.classList.add('placeholder-slide-in');
+            
+            setTimeout(() => {
+                navSearchInput.classList.remove('placeholder-slide-in');
+            }, 400);
+        }, 250);
+    }
+    
+    // Start slide animation
+    setTimeout(() => {
+        slidePlaceholder();
+        slideInterval = setInterval(slidePlaceholder, 3500);
+    }, 1500);
+    
+    // Handle focus events
+    navSearchInput.addEventListener('focus', () => {
+        clearInterval(slideInterval);
+        navSearchInput.classList.remove('placeholder-slide-out', 'placeholder-slide-in');
+        if (navSearchInput.value === '') {
+            navSearchInput.placeholder = "Ketik lokasi...";
+        }
+    });
+    
+    // Resume animation when input loses focus
+    navSearchInput.addEventListener('blur', () => {
+        if (navSearchInput.value === '') {
+            setTimeout(() => {
+                if (!navSearchInput.matches(':focus')) {
+                    slidePlaceholder();
+                    slideInterval = setInterval(slidePlaceholder, 3000);
+                }
+            }, 500);
+        }
+    });
+});
+</script>

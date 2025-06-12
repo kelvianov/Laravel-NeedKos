@@ -15,17 +15,15 @@
       <!-- Font Awesome and other non-critical resources -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-    
-    <!-- Critical inline CSS for instant hero loading -->
-    <style>
-        /* Critical hero styles for instant loading */
+      <!-- Critical inline CSS for instant hero loading -->
+    <style>        /* Critical hero styles - Tiket.com layout */
         .hero {
             position: relative;
             min-height: calc(100vh - 72px);
             display: flex;
             align-items: center;
             margin-top: 72px;
-            padding: 60px 0;
+            padding: 80px 0;
             overflow: hidden;
             background-color: #1a1a1a;
         }
@@ -36,13 +34,12 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('{{ asset('images/modernnnnnn-room.png') }}');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4)), url('{{ asset('images/modernnnnnn-room.png') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: scroll;
             opacity: 1;
-            will-change: auto;
         }
         .hero-content {
             position: relative;
@@ -51,84 +48,102 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 24px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 60px;
+        }
+        .hero-text {
+            flex: 1;
             color: #fff;
-            opacity: 1;
-            visibility: visible;
+            max-width: 500px;
+            /* Isolation from navbar animations */
+            position: relative;
+            z-index: 3;
+            transform: none !important;
+            animation: none !important;
         }
-        .hero-content h1 {
-            font-size: 3rem;
+        .hero-text h1 {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             line-height: 1.2;
-            text-rendering: optimizeSpeed;
+            letter-spacing: -0.01em;
+            /* Protect from navbar animations */
+            transform: none !important;
+            animation: none !important;
+            position: relative;
+            z-index: 3;
         }
-        .search-container {
-            background: #fff;
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-            opacity: 1;
-            visibility: visible;
+        .hero-text p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
         }
+        .hero-search-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+    </style>
     </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         @include('components.navbar')
-    </header>
-
-    <!-- Hero Section -->
+    </header>    <!-- Hero Section -->
     <section class="hero" id="home">
-        <div class="hero-content">
-            <h1>Find Your Perfect Stay</h1>
-            <p>Discover comfortable and affordable accommodations that match your lifestyle</p>
-            <div class="search-container">
+        <div class="hero-content">            <div class="hero-text">
+                <h1>Cari Kos <span style="color: #fbbf24; font-weight: inherit; background: none;">Impianmu</span></h1>
+                <p>Temukan kos nyaman dengan fasilitas lengkap dan harga terjangkau di seluruh Indonesia. Mulai pencarian Anda sekarang!</p>
+                
+                <div class="search-tags">
+                    <a href="{{ route('landing.search', ['query' => 'Dekat Kampus']) }}" class="search-tag">Dekat Kampus</a>
+                    <a href="{{ route('landing.search', ['query' => 'Pusat Kota']) }}" class="search-tag">Pusat Kota</a>
+                    <a href="{{ route('landing.search', ['query' => 'Monthly Deals']) }}" class="search-tag">Promo Bulanan</a>
+                    <a href="{{ route('landing.search', ['query' => 'Premium']) }}" class="search-tag">Premium</a>
+                </div>
+            </div>
+            
+            <div class="hero-search-card">
+                <h3 style="margin-bottom: 20px; color: #1f2937; font-size: 1.25rem; font-weight: 600;">Cari Kos Sekarang</h3>
+                
                 <form action="{{ route('landing.search') }}" method="GET" class="search-form">
-                    <div class="search-input-container">
-                        <input 
-                            type="text" 
-                            name="query"
-                            class="search-input" 
-                            placeholder="Mau tinggal di mana..."
-                            value="{{ $searchQuery ?? '' }}"
-                            required
-                            autocomplete="off"
-                        >
-                        <div class="city-suggestions" style="hidden: none;">
-                            @isset($locations)
-                                @foreach($locations as $city)
-                                    <div class="city-header" data-city-header="{{ $city['name'] }}">
-                                        <div class="city-suggestion" data-city="{{ $city['name'] }}" data-type="city">
-                                            <i class="fas fa-city"></i> {{ $city['name'] }}
-                                        </div>
-                                        @foreach($city['areas'] as $area)
-                                            <div class="city-suggestion area-suggestion" 
-                                                 data-city="{{ $area['name'] }}" 
-                                                 data-type="area"
-                                                 data-parent="{{ $city['name'] }}">
-                                                <i class="fas fa-map-marker-alt"></i> {{ $area['name'] }}
-                                                <span class="area-city">{{ $city['name'] }}</span>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @endforeach
-                            @endisset
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; color: #6b7280; font-weight: 500;">Lokasi</label>
+                        <input type="text" name="query" placeholder="Mau cari kos dimana?" 
+                               style="width: 100%; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;"
+                               value="{{ request('query') ?? '' }}">
+                    </div>
+                      <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                        <div style="flex: 1;">
+                            <label style="display: block; margin-bottom: 8px; color: #6b7280; font-weight: 500;">Budget</label>
+                            <select id="hero-price-select" name="price_range" style="width: 100%; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 8px;">
+                                <option value="">Semua Budget</option>
+                                <option value="0-500000">< 500K</option>
+                                <option value="500001-1000000">500K - 1M</option>
+                                <option value="1000001-2000000">1M - 2M</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <label style="display: block; margin-bottom: 8px; color: #6b7280; font-weight: 500;">Gender</label>
+                            <select id="hero-gender-select" name="gender" style="width: 100%; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 8px;">
+                                <option value="">Semua</option>
+                                <option value="male">Putra</option>
+                                <option value="female">Putri</option>
+                                <option value="mixed">Campur</option>
+                            </select>
                         </div>
                     </div>
-                    <button type="submit" class="search-btn">
-                        <i class="fas fa-search"></i> Search
+                      <button type="submit" style="width: 100%; background: #000000; color: white; padding: 14px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;">
+                        Cari Kos
                     </button>
                 </form>
-            </div>
-            <div class="search-tags">
-                <a href="{{ route('landing.search', ['query' => 'Dekat Kampus']) }}" class="search-tag">Dekat Kampus</a>
-                <a href="{{ route('landing.search', ['query' => 'Pusat Kota']) }}" class="search-tag">Pusat Kota</a>
-                <a href="{{ route('landing.search', ['query' => 'Monthly Deals']) }}" class="search-tag">Promo Bulanan</a>
-                <a href="{{ route('landing.search', ['query' => 'Premium']) }}" class="search-tag">Kamar Eksklusif</a>
             </div>
         </div>
     </section>
@@ -315,13 +330,10 @@
     </footer>    <script src="{{ asset('js/main.js') }}"></script>
     
     <!-- Optimized loading script for instant hero display -->
-    <script>
-        // Ensure immediate hero rendering
-        document.addEventListener('DOMContentLoaded', function() {
+    <script>        // Ensure immediate hero rendering        document.addEventListener('DOMContentLoaded', function() {
             // Force immediate visibility of hero elements
             const hero = document.querySelector('.hero');
             const heroContent = document.querySelector('.hero-content');
-            const searchContainer = document.querySelector('.search-container');
             
             if (hero) {
                 hero.style.opacity = '1';
@@ -331,164 +343,59 @@
                 heroContent.style.opacity = '1';
                 heroContent.style.visibility = 'visible';
             }
-            if (searchContainer) {
-                searchContainer.style.opacity = '1';
-                searchContainer.style.visibility = 'visible';
-            }
-            
-            // Rest of the original functionality
-            const searchForm = document.querySelector('.search-form');
-            const searchInput = document.querySelector('.search-input');
-            const searchTags = document.querySelectorAll('.search-tag');
-            const citySuggestions = document.querySelector('.city-suggestions');
-            const cityItems = document.querySelectorAll('.city-suggestion');
-            let currentFocus = -1;
-
-            // Show suggestions on input focus
-            searchInput.addEventListener('focus', () => {
-                searchForm.classList.add('focused');
-                if (searchInput.value.length > 0) {
-                    filterLocations(searchInput.value);
-                }
-                citySuggestions.style.display = 'block';
-            });
-
-            // Hide suggestions when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!searchForm.contains(e.target)) {
-                    citySuggestions.style.display = 'none';
-                }
-            });
-
-            // Handle keyboard navigation
-            searchInput.addEventListener('keydown', (e) => {
-                const activeItems = [...cityItems].filter(item => item.style.display !== 'none');
-
-                if (e.key === 'ArrowDown') {
-                    e.preventDefault();
-                    currentFocus++;
-                    addActive(activeItems);
-                } else if (e.key === 'ArrowUp') {
-                    e.preventDefault();
-                    currentFocus--;
-                    addActive(activeItems);
-                } else if (e.key === 'Enter' && currentFocus > -1) {
-                    e.preventDefault();
-                    if (activeItems[currentFocus]) {
-                        activeItems[currentFocus].click();
-                    }
-                }
-            });
-
-            // Filter locations as user types
-            searchInput.addEventListener('input', (e) => {
-                filterLocations(e.target.value);
-                currentFocus = -1;
-            });
-
-            // Handle location selection
-            cityItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    searchInput.value = item.dataset.city;
-                    citySuggestions.style.display = 'none';
-                    searchForm.submit();
-                });
-            });
-
-            function addActive(items) {
-                removeActive(items);
-                if (currentFocus >= items.length) currentFocus = 0;
-                if (currentFocus < 0) currentFocus = items.length - 1;
-                if (items[currentFocus]) {
-                    items[currentFocus].classList.add('active');
-                    items[currentFocus].scrollIntoView({ block: 'nearest' });
-                }
-            }
-
-            function removeActive(items) {
-                items.forEach(item => item.classList.remove('active'));
-            }
-
-            function filterLocations(query) {
-                const q = query.toLowerCase();
-                let hasMatches = false;
-
-                cityItems.forEach(item => {
-                    const location = item.dataset.city.toLowerCase();
-                    const type = item.dataset.type;
-                    const isMatch = location.includes(q);
-
-                    if (isMatch) {
-                        item.style.display = 'flex';
-                        if (type === 'area') {
-                            const cityHeader = document.querySelector(`[data-city-header="${item.dataset.parent}"]`);
-                            if (cityHeader) cityHeader.style.display = 'block';
-                        }
-                        hasMatches = true;
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-
-                citySuggestions.style.display = hasMatches ? 'block' : 'none';
-            }
-
-            // Add loading state to form on submit
-            searchForm.addEventListener('submit', () => {
-                if (searchInput.value.trim()) {
-                    searchForm.classList.add('loading');
-                }
-            });
-
-            // Carousel functionality
-            const prevBtn = document.querySelector('.prev-btn');
-            const nextBtn = document.querySelector('.next-btn');
-            const propertiesGrid = document.querySelector('.properties-grid');
-            const propertyCards = document.querySelectorAll('.property-card');
-
-            let currentPosition = 0;
-            const cardWidth = propertyCards[0]?.offsetWidth || 0;
-            const gap = 24; // This should match the gap in CSS
-            const cardsPerView = window.innerWidth > 768 ? 3 : 1;
-            const maxPosition = Math.max(0, propertyCards.length - cardsPerView);
-
-            function updateCarouselButtons() {
-                prevBtn.style.opacity = currentPosition === 0 ? '0.5' : '1';
-                nextBtn.style.opacity = currentPosition >= maxPosition ? '0.5' : '1';
-            }
-
-            prevBtn.addEventListener('click', () => {
-                if (currentPosition > 0) {
-                    currentPosition--;
-                    const translateX = -(currentPosition * (cardWidth + gap));
-                    propertiesGrid.style.transform = `translateX(${translateX}px)`;
-                    updateCarouselButtons();
-                }
-            });
-
-            nextBtn.addEventListener('click', () => {
-                if (currentPosition < maxPosition) {
-                    currentPosition++;
-                    const translateX = -(currentPosition * (cardWidth + gap));
-                    propertiesGrid.style.transform = `translateX(${translateX}px)`;
-                    updateCarouselButtons();
-                }
-            });
-
-            // Initialize carousel state
-            updateCarouselButtons();
-
-            // Update carousel on window resize
-            window.addEventListener('resize', () => {
-                currentPosition = 0;
-                propertiesGrid.style.transform = 'translateX(0)';
-                updateCarouselButtons();
-            });
-        });
-
-        
+        });        
     </script>
     <script src="{{ asset('js/filter.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+        // Initialize Choices.js for hero section dropdowns
+        document.addEventListener('DOMContentLoaded', function () {
+            const heroPriceSelect = document.getElementById('hero-price-select');
+            const heroGenderSelect = document.getElementById('hero-gender-select');
+
+            if (heroPriceSelect) {
+                new Choices(heroPriceSelect, {
+                    searchEnabled: false,
+                    itemSelectText: '',
+                    shouldSort: false
+                });
+            }
+
+            if (heroGenderSelect) {
+                new Choices(heroGenderSelect, {
+                    searchEnabled: false,
+                    itemSelectText: '',
+                    shouldSort: false
+                });
+            }
+        });
+    </script>
+<script>
+// Typewriter animasi, pastikan warna kuning pada 'Impian' selama dan setelah animasi
+window.addEventListener('load', () => {
+  const heroTitle = document.querySelector('.hero h1');
+  if (!heroTitle) return;
+  setTimeout(() => {
+    const before = 'Cari Kos ';
+    const impian = 'Impianmu';
+    const after = ' ';
+
+    let i = 0;
+    function type() {
+      if (i <= before.length) {
+        heroTitle.innerHTML = before.slice(0, i);
+      } else if (i <= before.length + impian.length) {
+        heroTitle.innerHTML = before + '<span style="color:#fbbf24; font-weight:inherit; background:none;">' + impian.slice(0, i-before.length) + '</span>';
+      } else {
+        heroTitle.innerHTML = before + '<span style="color:#fbbf24; font-weight:inherit; background:none;">' + impian + '</span>' + after;
+        return;
+      }
+      i++;
+      setTimeout(type, 80);
+    }
+    type();
+  }, 1000);
+});
+</script>
 </body>
 </html>

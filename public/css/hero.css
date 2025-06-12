@@ -1,13 +1,12 @@
-/* Hero Section - Optimized for instant loading */
+/* Hero Section - Tiket.com style layout */
 .hero {
     position: relative;
     min-height: calc(100vh - 72px);
     display: flex;
     align-items: center;
     margin-top: 72px;
-    padding: 60px 0;
+    padding: 80px 0;
     overflow: hidden;
-    /* Prevent any flash of unstyled content */
     background-color: #1a1a1a;
 }
 
@@ -18,16 +17,12 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('../images/modernnnnnn-room.png');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4)), url('../images/modernnnnnn-room.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    /* Force immediate background loading */
     background-attachment: scroll;
-    /* Ensure no flash during load */
     opacity: 1;
-    /* Prevent any loading delays */
-    will-change: auto;
 }
 
 .hero-content {
@@ -37,31 +32,46 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 24px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+}
+
+.hero-text {
+    flex: 1;
     color: #fff;
-    /* Ensure immediate text rendering */
-    opacity: 1;
-    visibility: visible;
+    max-width: 500px;
 }
 
-.hero-content h1 {
-    font-size: 3rem;
+.hero-text h1 {
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
     font-weight: 700;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     line-height: 1.2;
-    /* Remove any text rendering delays */
+    letter-spacing: -0.01em;
     text-rendering: optimizeSpeed;
 }
 
-.hero-content p {
-    font-size: 1.25rem;
-    margin-bottom: 2.5rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+.hero-text .highlight {
+    color: #fbbf24;
+}
+
+.hero-text p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
     opacity: 0.9;
-    /* Remove any text rendering delays */
+    line-height: 1.6;
     text-rendering: optimizeSpeed;
+}
+
+.hero-search-card {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
 .search-container {
@@ -121,49 +131,60 @@
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    justify-content: center;
-    margin-top: 24px;
+    justify-content: flex-start;
+    margin-top: 0;
 }
 
 .search-tag {
-    background: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.2);
     color: #fff;
-    padding: 6px 16px;
-    border-radius: 100px;
-    font-size: 0.9rem;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
     text-decoration: none;
-    /* Remove transition for instant response */
-    transition: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: all 0.2s ease;
     backdrop-filter: blur(4px);
 }
 
 .search-tag:hover {
-    background: rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-1px);
 }
+
 
 @media (max-width: 768px) {
     .hero {
-        min-height: 80vh;
+        min-height: calc(100vh - 72px);
         padding: 40px 0;
     }
 
-    .hero-content h1 {
-        font-size: 2rem;
+    .hero-content {
+        flex-direction: column;
+        gap: 40px;
+        text-align: center;
     }
 
-    .hero-content p {
-        font-size: 1rem;
+    .hero-text {
+        max-width: 100%;
     }
 
-    .search-container {
-        margin: 0 20px;
-        padding: 16px;
+    .hero-text h1 {
+        font-size: 2.5rem;
     }
 
-    .search-btn {
-        position: static;
-        transform: none;
-        width: 100%;
-        margin-top: 12px;
+    .hero-text p {
+        font-size: 1.1rem;
+    }
+
+    .hero-search-card {
+        max-width: 100%;
+        padding: 24px;
+    }
+
+    .search-tags {
+        justify-content: center;
+        margin-top: 1.5rem;
     }
 }
