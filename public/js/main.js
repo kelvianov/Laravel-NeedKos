@@ -154,18 +154,53 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// --- NEW Carousel Button Functionality (robust, always works, with forced scroll CSS and debug) ---
 document.addEventListener('DOMContentLoaded', function () {
-    const carousel = document.getElementById('kosCarousel');
-    const card = carousel.querySelector('.property-card');
-    const scrollAmount = card.offsetWidth + 16;
-
-    document.querySelector('.next-btn').addEventListener('click', () => {
-        carousel.scrollBy({ left: scrollAmount * 3, behavior: 'smooth' });
-    });
-
-    document.querySelector('.prev-btn').addEventListener('click', () => {
-        carousel.scrollBy({ left: -scrollAmount * 3, behavior: 'smooth' });
-    });
+  document.querySelectorAll('.properties-grid').forEach(grid => {
+    grid.style.display = 'flex';
+    grid.style.flexWrap = 'nowrap';
+    grid.style.overflowX = 'auto';
+    grid.style.scrollBehavior = 'smooth';
+  });
+  document.body.addEventListener('click', function(e) {
+    const btn = e.target.closest('.carousel-btn, .carousel-btn-new');
+    if (!btn) return;
+    const isPrev = btn.classList.contains('prev-btn') || btn.classList.contains('prev-btn-new');
+    const isNext = btn.classList.contains('next-btn') || btn.classList.contains('next-btn-new');
+    if (!isPrev && !isNext) return;
+    let sectionHeader = btn.closest('.section-header');
+    let carouselContainer = null;
+    if (sectionHeader) {
+      let sibling = sectionHeader.nextElementSibling;
+      while (sibling) {
+        if (sibling.classList && sibling.classList.contains('carousel-container')) {
+          carouselContainer = sibling;
+          break;
+        }
+        sibling = sibling.nextElementSibling;
+      }
+    }
+    if (!carouselContainer) {
+      carouselContainer = btn.closest('.carousel-container');
+    }
+    if (!carouselContainer) {
+      carouselContainer = document.querySelector('.carousel-container');
+    }
+    if (!carouselContainer) return;
+    const propertiesGrid = carouselContainer.querySelector('.properties-grid');
+    if (!propertiesGrid) return;
+    const cards = Array.from(propertiesGrid.querySelectorAll('.property-card'));
+    if (cards.length < 2) return;
+    // Simpan index aktif di dataset
+    let currentIdx = parseInt(propertiesGrid.dataset.carouselIdx || '0', 10);
+    if (isNext) {
+      currentIdx = Math.min(currentIdx + 1, cards.length - 1);
+    } else if (isPrev) {
+      currentIdx = Math.max(currentIdx - 1, 0);
+    }
+    propertiesGrid.dataset.carouselIdx = currentIdx;
+    cards[currentIdx].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+  });
 });
 
 

@@ -90,7 +90,6 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
     </style>
-    </style>
 </head>
 <body>
     <!-- Header -->
@@ -250,15 +249,15 @@
                         @endif
                     </h2>
                     @if($kos->count() > 1)
-                        <div class="carousel-buttons">
-                            <button class="carousel-btn prev-btn" aria-label="Previous">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button class="carousel-btn next-btn" aria-label="Next">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                    @endif
+<div class="carousel-buttons">
+    <button class="carousel-btn prev-btn" aria-label="Previous">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="carousel-btn next-btn" aria-label="Next">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+</div>
+@endif
                 </div>
                 <a href="{{ route('index') }}" class="view-all-link">
                     Clear Search
@@ -269,13 +268,13 @@
                 <div class="header-left">
                     <h2>Featured Properties</h2>
                     <div class="carousel-buttons">
-                        <button class="carousel-btn prev-btn" aria-label="Previous">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-btn next-btn" aria-label="Next">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
+    <button class="carousel-btn prev-btn" aria-label="Previous">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="carousel-btn next-btn" aria-label="Next">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+</div>
                 </div>
                 <a href="{{ route('landing.search') }}" class="view-all-link">
                     Lihat semua
@@ -330,86 +329,20 @@
     </footer>    <script src="{{ asset('js/main.js') }}"></script>
     
     <!-- Optimized loading script for instant hero display -->
-    <script>        // Ensure immediate hero rendering        document.addEventListener('DOMContentLoaded', function() {
-            // Force immediate visibility of hero elements
-            const hero = document.querySelector('.hero');
-            const heroContent = document.querySelector('.hero-content');
-            
-            if (hero) {
-                hero.style.opacity = '1';
-                hero.style.visibility = 'visible';
-            }
-            if (heroContent) {
-                heroContent.style.opacity = '1';
-                heroContent.style.visibility = 'visible';
-            }
-        });        
-    </script>
+    <script>
+// Ensure immediate hero rendering
+// (minified for safety)
+document.addEventListener('DOMContentLoaded',function(){const hero=document.querySelector('.hero');const heroContent=document.querySelector('.hero-content');if(hero){hero.style.opacity='1';hero.style.visibility='visible';}if(heroContent){heroContent.style.opacity='1';heroContent.style.visibility='visible';}});
+</script>
     <script src="{{ asset('js/filter.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script>
-        // Initialize Choices.js for hero section dropdowns
-        document.addEventListener('DOMContentLoaded', function () {
-            const heroPriceSelect = document.getElementById('hero-price-select');
-            const heroGenderSelect = document.getElementById('hero-gender-select');
-
-            if (heroPriceSelect) {
-                new Choices(heroPriceSelect, {
-                    searchEnabled: false,
-                    itemSelectText: '',
-                    shouldSort: false
-                });
-            }
-
-            if (heroGenderSelect) {
-                new Choices(heroGenderSelect, {
-                    searchEnabled: false,
-                    itemSelectText: '',
-                    shouldSort: false
-                });
-            }
-        });
-    </script>
-<script>
+// Initialize Choices.js for hero section dropdowns
+document.addEventListener('DOMContentLoaded',function(){const heroPriceSelect=document.getElementById('hero-price-select');const heroGenderSelect=document.getElementById('hero-gender-select');if(heroPriceSelect){new Choices(heroPriceSelect,{searchEnabled:false,itemSelectText:'',shouldSort:false});}if(heroGenderSelect){new Choices(heroGenderSelect,{searchEnabled:false,itemSelectText:'',shouldSort:false});}});
+</script>
+    <script>
 // Typewriter animasi, pastikan warna kuning pada 'Impian' selama dan setelah animasi
-window.addEventListener('load', () => {
-  const heroTitle = document.querySelector('.hero h1');
-  if (!heroTitle) return;
-  setTimeout(() => {
-    const before = 'Cari Kos ';
-    const words = ['Impianmu', 'Nyaman', 'Favorit', 'Terbaik', 'Hemat'];
-    let wordIndex = 0;
-    function typeWord(word, cb) {
-      let j = 0;
-      function typeLetter() {
-        heroTitle.innerHTML = before + '<span style="color:#fbbf24; font-weight:inherit; background:none;">' + word.slice(0, j) + '</span>';
-        if (j < word.length) {
-          j++;
-          setTimeout(typeLetter, 70);
-        } else {
-          setTimeout(cb, 1200);
-        }
-      }
-      typeLetter();
-    }
-    function loopWords() {
-      wordIndex = (wordIndex + 1) % words.length;
-      typeWord(words[wordIndex], loopWords);
-    }
-    // Typewriter animasi pertama kali
-    let i = 0;
-    function typeFirst() {
-      if (i <= before.length) {
-        heroTitle.innerHTML = before.slice(0, i);
-        i++;
-        setTimeout(typeFirst, 80);
-      } else {
-        typeWord(words[0], loopWords);
-      }
-    }
-    typeFirst();
-  }, 1000);
-});
+window.addEventListener('load',()=>{const heroTitle=document.querySelector('.hero h1');if(!heroTitle)return;setTimeout(()=>{const before='Cari Kos ';const words=['Impianmu','Nyaman','Favorit','Terbaik','Hemat'];let wordIndex=0;function typeWord(word,cb){let j=0;function typeLetter(){heroTitle.innerHTML=before+`<span style="color:#fbbf24; font-weight:inherit; background:none;">${word.slice(0,j)}</span>`;if(j<word.length){j++;setTimeout(typeLetter,70);}else{setTimeout(cb,1200);}}typeLetter();}function loopWords(){wordIndex=(wordIndex+1)%words.length;typeWord(words[wordIndex],loopWords);}let i=0;function typeFirst(){if(i<=before.length){heroTitle.innerHTML=before.slice(0,i);i++;setTimeout(typeFirst,80);}else{typeWord(words[0],loopWords);}}typeFirst();},1000);});
 </script>
 </body>
 </html>
