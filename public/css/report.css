@@ -138,10 +138,6 @@ body {
     color: #111;
 }
 
-.priority-label:hover {
-    border-color: #111;
-}
-
 .submit-btn {
     width: 100%;
     background: #111;
@@ -169,6 +165,176 @@ body {
     background: #ccc;
     cursor: not-allowed;
     transform: none;
+}
+
+/* Choices.js Custom Styling - Black & White Theme */
+.choices {
+    margin-bottom: 0;
+}
+
+.choices__inner {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    min-height: 44px;
+    padding: 7.5px 7.5px 3.75px;
+    transition: all 0.3s ease;
+}
+
+.choices__inner:focus,
+.choices.is-focused .choices__inner {
+    border-color: #111;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.choices__list--single {
+    padding: 4px 16px 4px 4px;
+}
+
+.choices__item--selectable {
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: 2px 0;
+    color: #333;
+    background: #fff;
+}
+
+.choices__item--selectable.is-highlighted {
+    background: #fff !important;
+    color: #333 !important;
+}
+
+.choices__item--choice.is-selected {
+    background: #fff !important;
+    color: #333 !important;
+}
+
+.choices__placeholder {
+    color: #999 !important;
+    opacity: 1 !important;
+    display: block !important;
+}
+
+/* Ensure placeholder is visible when no selection is made */
+.choices__list--single .choices__placeholder {
+    color: #999 !important;
+    font-weight: normal !important;
+    display: block !important;
+}
+
+/* Hide placeholder when item is selected */
+.choices.has-value .choices__placeholder {
+    display: none !important;
+}
+
+/* Fix untuk item yang dipilih di dropdown */
+.choices__item {
+    color: #111 !important;
+    background: transparent;
+}
+
+.choices__item--choice {
+    color: #333 !important;
+}
+
+.choices__list--dropdown .choices__item--selectable {
+    padding-right: 12px;
+}
+
+.choices__list--dropdown {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 2px;
+}
+
+.choices[data-type*="select-one"] .choices__inner {
+    padding-bottom: 7.5px;
+}
+
+.choices[data-type*="select-one"] .choices__input {
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    margin: 0;
+}
+
+.choices__button {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23111' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-size: 16px 12px;
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    padding-right: 2rem;
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+}
+
+/* Additional fixes for selected item visibility */
+.choices__list--single .choices__item {
+    color: #111 !important;
+    font-weight: 500 !important;
+    display: block !important;
+}
+
+.choices__list--single .choices__placeholder {
+    color: #999 !important;
+    font-weight: normal !important;
+    display: block !important;
+}
+
+/* Ensure selected value is visible and placeholder is hidden when value exists */
+.choices.has-value .choices__list--single .choices__item {
+    color: #111 !important;
+    display: block !important;
+}
+
+.choices.has-value .choices__list--single .choices__placeholder {
+    display: none !important;
+}
+
+/* Ensure dropdown items are visible */
+.choices__list--dropdown .choices__item {
+    color: #333 !important;
+    background: #fff;
+}
+
+.choices__list--dropdown .choices__item.is-highlighted {
+    background: #fff !important;
+    color: #333 !important;
+}
+
+/* Override any conflicting styles */
+.choices__inner .choices__item {
+    color: #111 !important;
+}
+
+/* Remove all hover and interactive effects */
+.choices__item--selectable:hover,
+.choices__item--selectable:focus,
+.choices__item--choice:hover,
+.choices__item--choice:focus,
+.choices__list--dropdown .choices__item:hover,
+.choices__list--dropdown .choices__item:focus {
+    background: #fff !important;
+    color: #333 !important;
+}
+
+.choices__button:hover,
+.choices__button:focus {
+    opacity: 0.7 !important;
+}
+
+.choices[data-type*="select-one"]:hover .choices__inner,
+.choices[data-type*="select-one"]:focus .choices__inner {
+    border-color: #ddd !important;
+    box-shadow: none !important;
 }
 
 @media (max-width: 768px) {

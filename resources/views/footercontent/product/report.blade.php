@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report a Problem - KosKu</title>    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">    <link rel="stylesheet" href="{{ asset('css/report.css') }}">
 </head>
 <body>
@@ -30,16 +31,11 @@
                         <label class="form-label" for="email">Email Address</label>
                         <input type="email" id="email" name="email" class="form-input" required>
                     </div>
-                </div>
-
-                <div class="form-group">
+                </div>                <div class="form-group">
                     <label class="form-label" for="category">Problem Category</label>
                     <select id="category" name="category" class="form-select" required>
-                        <option value="">Select a category</option>
                         <option value="account">Account Issues</option>
                         <option value="payment">Payment Problems</option>
-                        <option value="booking">Booking Issues</option>
-                        <option value="property">Property Listing</option>
                         <option value="technical">Technical Problems</option>
                         <option value="other">Other</option>
                     </select>
@@ -65,12 +61,12 @@
 
                 <div class="form-group">
                     <label class="form-label" for="subject">Subject</label>
-                    <input type="text" id="subject" name="subject" class="form-input" placeholder="Brief description of the problem" required>
+                    <input type="text" id="subject" name="subject" class="form-input" placeholder="Deskripsi singkat tentang masalah" required>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="description">Detailed Description</label>
-                    <textarea id="description" name="description" class="form-textarea" placeholder="Please provide as much detail as possible about the issue you're experiencing..." required></textarea>
+                    <textarea id="description" name="description" class="form-textarea" placeholder="Silakan berikan detail sebanyak mungkin tentang masalah yang Anda alami..." required></textarea>
                 </div>
 
                 <button type="submit" class="submit-btn">
@@ -105,10 +101,27 @@
             submitBtn.disabled = true;
 
             setTimeout(() => {
-                alert('Thank you! Your report has been submitted successfully. We will review it and get back to you soon.');                document.getElementById('reportForm').reset();
-                submitBtn.innerHTML = originalText;
+                alert('Thank you! Your report has been submitted successfully. We will review it and get back to you soon.');                document.getElementById('reportForm').reset();                submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
             }, 2000);
+        });
+    </script>
+
+    <!-- Choices.js -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const categoryElement = document.getElementById('category');
+            if (categoryElement) {
+                new Choices(categoryElement, {
+                    searchEnabled: false,
+                    itemSelectText: '',
+                    shouldSort: false,
+                    placeholder: true,
+                    placeholderValue: 'Select a category',
+                    allowHTML: true,
+                    removeItemButton: false
+                });
+            }
         });
     </script>
 
