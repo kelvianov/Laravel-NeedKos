@@ -156,17 +156,16 @@
 
                 const data = await response.json();
 
-                if (data.success) {
-                    const propertyCard = document.querySelector(`[data-kos-id="${kosId}"]`);
+                if (data.success) {                    const propertyCard = document.querySelector(`[data-kos-id="${kosId}"]`);
                     if (propertyCard) {
-                        propertyCard.style.animation = 'fadeOut 0.3s ease forwards';
+                        propertyCard.style.animation = 'fadeOut 0.1s ease forwards';
                         setTimeout(() => {
                             propertyCard.remove();
                             const remainingCards = document.querySelectorAll('.property-card').length;
                             if (remainingCards === 0) {
                                 location.reload();
                             }
-                        }, 300);
+                        }, 100);
                     }
                 }
             } catch (error) {
