@@ -10,9 +10,9 @@
                 <div class="footer-section">
                     <h4>Product</h4>
                     <ul>
-                        <li><a href="#">Search Rooms</a></li>
-                        <li><a href="#">List Property</a></li>
-                        <li><a href="#">Premium Listings</a></li>
+                        <li><a href="{{ route('index') }}#search">Search Kos</a></li>
+                        <li><a href="{{ route('register') }}">List Your Property</a></li>
+                        <li><a href="{{ route('report.problem') }}">Report a Problem</a></li>
                         <li><a href="#">Mobile App</a></li>
                     </ul>
                 </div>
