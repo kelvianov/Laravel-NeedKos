@@ -1,7 +1,12 @@
-/* Hero Section - Tiket.com style layout */
+/* Zoom 90% effect specifically for index page only */
+body {
+    zoom: 90%;
+}
+
+/* Hero Section - Tiket.com style layout with index page adjustments */
 .hero {
     position: relative;
-    min-height: calc(100vh - 72px);
+    min-height: calc(115vh - 80px);
     display: flex;
     align-items: center;
     margin-top: 72px;
@@ -13,10 +18,10 @@
 .hero::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: -15%;
+    left: -15%;
+    right: -15%;
+    bottom: -15%;
     background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4)), url('../images/modernnnnnn-room.png');
     background-size: cover;
     background-position: center;

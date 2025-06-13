@@ -14,81 +14,9 @@
     <link rel="stylesheet" href="{{ asset('css/search.css') }}" />
       <!-- Font Awesome and other non-critical resources -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-      <!-- Critical inline CSS for instant hero loading -->
-    <style>        /* Critical hero styles - Tiket.com layout */
-        .hero {
-            position: relative;
-            min-height: calc(100vh - 72px);
-            display: flex;
-            align-items: center;
-            margin-top: 72px;
-            padding: 80px 0;
-            overflow: hidden;
-            background-color: #1a1a1a;
-        }
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4)), url('{{ asset('images/modernnnnnn-room.png') }}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: scroll;
-            opacity: 1;
-        }
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 60px;
-        }
-        .hero-text {
-            flex: 1;
-            color: #fff;
-            max-width: 500px;
-            /* Isolation from navbar animations */
-            position: relative;
-            z-index: 3;
-            transform: none !important;
-            animation: none !important;
-        }
-        .hero-text h1 {
-            font-size: clamp(2.5rem, 4vw, 3.5rem);
-            font-weight: 700;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-            letter-spacing: -0.01em;
-            /* Protect from navbar animations */
-            transform: none !important;
-            animation: none !important;
-            position: relative;
-            z-index: 3;
-        }
-        .hero-text p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-        .hero-search-card {
-            background: white;
-            border-radius: 16px;
-            padding: 32px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />      <!-- Critical inline CSS for instant hero loading -->
+    <style>
+        /* Minimal critical styles moved to hero.css */
     </style>
 </head>
 <body>
