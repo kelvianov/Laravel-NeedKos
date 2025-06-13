@@ -53,16 +53,15 @@
         <!-- Right Side (auth / non-auth) -->
         <div class="nav-end">
             @auth
-                <div class="nav-profile">
-                    <div class="profile-wrapper">
+                <div class="nav-profile">                    <div class="profile-wrapper">
                         <img src="{{ Auth::user()->avatar ? asset('storage/avatars/' . Auth::user()->avatar) : asset('images/default-avatar.png') }}" 
                              alt="Profile" 
                              class="profile-image">
                         <span class="profile-name">{{ Auth::user()->name }}</span>
-                        <i class="fas fa-chevron-down"></i>
+                        <i class="fas fa-chevron-down" id="profile-dropdown-icon"></i>
                     </div>
 
-                    <div class="profile-dropdown">
+                    <div class="profile-dropdown" id="profile-dropdown">
                         <a href="{{ route('profile.show') }}" class="dropdown-item">
                             <i class="fas fa-user"></i> Profile
                         </a>
@@ -371,8 +370,7 @@
     transform: rotate(45deg);
 }
 
-.profile-wrapper:hover + .profile-dropdown,
-.profile-dropdown:hover {
+.profile-dropdown.show {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -631,8 +629,7 @@ document.addEventListener('DOMContentLoaded', function() {
             navSearchInput.placeholder = "Ketik lokasi...";
         }
     });
-    
-    // Resume animation when input loses focus
+      // Resume animation when input loses focus
     navSearchInput.addEventListener('blur', () => {
         if (navSearchInput.value === '') {
             setTimeout(() => {
@@ -643,5 +640,23 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 500);
         }
     });
+
+    // Profile dropdown click functionality
+    const profileDropdownIcon = document.getElementById('profile-dropdown-icon');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    
+    if (profileDropdownIcon && profileDropdown) {
+        profileDropdownIcon.addEventListener('click', function(e) {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.nav-profile')) {
+                profileDropdown.classList.remove('show');
+            }
+        });
+    }
 });
 </script>
