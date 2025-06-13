@@ -161,9 +161,7 @@
                     Tampilkan Lebih Banyak
                 </button>
             </div>
-        </div>
-
-        @auth
+        </div>        @auth
         <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
             <div class="modal" onclick="event.stopPropagation()">
                 <div class="modal-header">
@@ -175,6 +173,7 @@
                         <label class="form-label" for="reviewerName">Nama</label>
                         <input type="text" id="reviewerName" class="form-input" value="{{ Auth::user()->name }}" readonly>
                     </div>
+                    
                     <div class="form-group">
                         <label class="form-label">Rating</label>
                         <div class="star-rating" id="starRating">
@@ -184,16 +183,28 @@
                             <i class="fas fa-star star" data-rating="4"></i>
                             <i class="fas fa-star star" data-rating="5"></i>
                         </div>
-                    </div>                    <div class="form-group">
-                        <label class="form-label" for="reviewText">Ulasan</label>
-                        <textarea id="reviewText" class="form-textarea" placeholder="Tulis ulasan Anda..." required></textarea>
                     </div>
+
                     <div class="form-group">
-                        <label class="form-label" for="reviewImages">Tambah Foto (Opsional)</label>
-                        <input type="file" id="reviewImages" class="form-input" multiple accept="image/*" style="padding: 8px;">
-                        <small style="color: #666; font-size: 0.85rem;">Maksimal 5 foto, ukuran masing-masing maksimal 2MB</small>
-                        <div id="imagePreview" style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;"></div>
+                        <label class="form-label" for="reviewText">Ulasan</label>
+                        <textarea id="reviewText" class="form-textarea" placeholder="Bagikan pengalaman Anda..." required></textarea>
                     </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="reviewImages">Foto (Opsional)</label>
+                        <div class="upload-section">
+                            <label for="reviewImages" class="upload-label">
+                                <div class="upload-icon">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                                <span class="upload-text">Klik untuk upload foto</span>
+                                <span class="upload-hint">Maksimal 5 foto, 2MB per file</span>
+                            </label>
+                            <input type="file" id="reviewImages" class="upload-input" multiple accept="image/*">
+                        </div>
+                        <div id="imagePreview" class="image-preview-container"></div>
+                    </div>
+                    
                     <div class="form-actions">
                         <button type="button" class="btn btn-cancel" onclick="closeModal()">Batal</button>
                         <button type="submit" class="btn btn-submit">Kirim Ulasan</button>
@@ -584,9 +595,7 @@
             if (!name || !reviewText || selectedRating === 0) {
                 alert('Mohon lengkapi semua field dan berikan rating!');
                 return;
-            }
-
-            // Tampilkan loading state pada tombol
+            }            // Tampilkan loading state pada tombol
             const submitBtn = document.querySelector('.btn-submit');
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
@@ -624,8 +633,7 @@
                 if (!response.ok) {
                     if (data.errors) {
                         let msg = Object.values(data.errors).map(arr => arr.join(', ')).join('\n');
-                        alert(msg);
-                    } else {
+                        alert(msg);                    } else {
                         alert('Terjadi kesalahan pada server.');
                     }
                     submitBtn.innerHTML = originalText;
@@ -770,8 +778,7 @@
             loadReviews(1, false);            
             // Attach click handler to load more button
             document.getElementById('loadMoreReviewsBtn').addEventListener('click', loadMoreReviews);
-            
-            // Handle image preview
+              // Handle image preview
             document.getElementById('reviewImages').addEventListener('change', function(e) {
                 const files = e.target.files;
                 const previewContainer = document.getElementById('imagePreview');
@@ -791,13 +798,13 @@
                     
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        const previewDiv = document.createElement('div');
-                        previewDiv.style.cssText = 'position: relative; width: 80px; height: 80px;';
-                        previewDiv.innerHTML = `
-                            <img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px; border: 1px solid #dee2e6;">
-                            <button type="button" onclick="removeImage(${index})" style="position: absolute; top: -8px; right: -8px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer;">×</button>
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'preview-item';
+                        previewItem.innerHTML = `
+                            <img src="${e.target.result}" class="preview-image" alt="Preview ${index + 1}">
+                            <button type="button" class="remove-image-btn" onclick="removeImage(${index})" title="Hapus foto">×</button>
                         `;
-                        previewContainer.appendChild(previewDiv);
+                        previewContainer.appendChild(previewItem);
                     };
                     reader.readAsDataURL(file);
                 });
