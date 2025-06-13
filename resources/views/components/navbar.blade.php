@@ -46,8 +46,8 @@
         <!-- Menu -->
         <ul class="nav-menu">
             <li><a href="{{ route('index') }}" class="nav-link">Explore</a></li>
-            <li><a href="#properties" class="nav-link">Daftar</a></li>
-            <li><a href="{{ route('landing.testimonials') }}" class="nav-link">Reviews</a></li>
+            <li><a href="{{ route('help.center') }}" class="nav-link">Pusat Bantuan</a></li>
+            <li><a href="{{ route('terms') }}" class="nav-link">Syarat & Ketentuan</a></li>
         </ul>
 
         <!-- Right Side (auth / non-auth) -->
