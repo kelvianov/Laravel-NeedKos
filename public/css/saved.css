@@ -118,14 +118,14 @@
 .properties-grid {
     display: flex;
     flex-direction: row;
-    gap: 25px;
+    gap: 15px;
     overflow-x: auto;
     overflow-y: hidden;
     padding-bottom: 8px;
     margin-bottom: 40px;
-    max-width: calc((360px * 3) + (37px * 2)); /* 3 cards + 2 gaps */
+    max-width: calc((360px * 3) + (37px * 1)); /* 3 cards + 2 gaps */
     scroll-snap-type: x mandatory;
-    scroll-padding: 24px;
+    scroll-padding: 1px;
     scrollbar-width: none; /* untuk Firefox */
     -ms-overflow-style: none; /* untuk IE dan Edge lama */
 }
