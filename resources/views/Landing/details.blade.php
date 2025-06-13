@@ -184,10 +184,15 @@
                             <i class="fas fa-star star" data-rating="4"></i>
                             <i class="fas fa-star star" data-rating="5"></i>
                         </div>
-                    </div>
-                    <div class="form-group">
+                    </div>                    <div class="form-group">
                         <label class="form-label" for="reviewText">Ulasan</label>
                         <textarea id="reviewText" class="form-textarea" placeholder="Tulis ulasan Anda..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="reviewImages">Tambah Foto (Opsional)</label>
+                        <input type="file" id="reviewImages" class="form-input" multiple accept="image/*" style="padding: 8px;">
+                        <small style="color: #666; font-size: 0.85rem;">Maksimal 5 foto, ukuran masing-masing maksimal 2MB</small>
+                        <div id="imagePreview" style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;"></div>
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn btn-cancel" onclick="closeModal()">Batal</button>
@@ -279,6 +284,16 @@
         <button class="photo-nav prev" onclick="prevPhoto()">&#8249;</button>
         <img id="largePhoto" src="" alt="Large view">
         <button class="photo-nav next" onclick="nextPhoto()">&#8250;</button>
+    </div>
+</div>
+
+<!-- Review Image Modal -->
+<div class="review-image-modal" id="reviewImageModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center;">
+    <div class="review-image-container" style="position: relative; max-width: 90%; max-height: 90%;">
+        <button class="close-review-modal" onclick="closeReviewImageModal()" style="position: absolute; top: -40px; right: 0; background: none; border: none; color: white; font-size: 30px; cursor: pointer; z-index: 10000;">&times;</button>
+        <button class="review-nav prev" onclick="prevReviewImage()" style="position: absolute; left: -50px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; font-size: 30px; padding: 10px 15px; cursor: pointer; border-radius: 50%;">&#8249;</button>
+        <img id="reviewImageLarge" src="" alt="Review image" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;">
+        <button class="review-nav next" onclick="nextReviewImage()" style="position: absolute; right: -50px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; font-size: 30px; padding: 10px 15px; cursor: pointer; border-radius: 50%;">&#8250;</button>
     </div>
 </div>
 
@@ -558,22 +573,80 @@
             document.getElementById('reviewForm').reset();
             selectedRating = 0;
             updateStars();
-        }
-
-        // Form submission
+        }        // Form submission
         document.getElementById('reviewForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const name = document.getElementById('reviewerName').value.trim();
             const reviewText = document.getElementById('reviewText').value.trim();
+            const images = document.getElementById('reviewImages').files;
             
             if (!name || !reviewText || selectedRating === 0) {
                 alert('Mohon lengkapi semua field dan berikan rating!');
                 return;
             }
 
-            addNewReview(name, selectedRating, reviewText);
-            closeModal();
+            // Tampilkan loading state pada tombol
+            const submitBtn = document.querySelector('.btn-submit');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+            submitBtn.disabled = true;
+
+            // Create FormData untuk mengirim file
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('comment', reviewText);
+            formData.append('rating', selectedRating);
+            formData.append('kos_id', {{ $kos->id }});
+            
+            // Tambahkan gambar ke FormData
+            Array.from(images).forEach((image, index) => {
+                formData.append('images[]', image);
+            });
+
+            fetch('/reviews', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: formData
+            })
+            .then(async response => {
+                let text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    alert('Terjadi kesalahan pada server.');
+                    return;
+                }
+                
+                if (!response.ok) {
+                    if (data.errors) {
+                        let msg = Object.values(data.errors).map(arr => arr.join(', ')).join('\n');
+                        alert(msg);
+                    } else {
+                        alert('Terjadi kesalahan pada server.');
+                    }
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    return;
+                }
+                
+                // Reload reviews from first page after successful submission
+                currentPage = 1;
+                loadReviews(1, false);
+                
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                closeModal();
+            })
+            .catch(error => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                alert("Terjadi kesalahan");
+                console.error(error);
+            });
         });
 
         // Close modal with Escape key
@@ -599,13 +672,31 @@
                 reviewsContainer.innerHTML = '<div class="review-card"><p class="review-text">Belum ada ulasan.</p></div>';
                 return;
             }
-            
-            reviews.forEach(review => {
+              reviews.forEach(review => {
                 let starsHtml = '';
                 for (let i = 1; i <= 5; i++) {
                     starsHtml += `<i class="${i <= review.rating ? 'fas' : 'far'} fa-star"></i>`;
                 }
                 const dateText = timeAgo(new Date(review.created_at));
+                
+                // Build images HTML if there are any
+                let imagesHtml = '';
+                if (review.images && review.images.length > 0) {
+                    imagesHtml = '<div class="review-images" style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">';
+                    review.images.forEach((imagePath, index) => {
+                        imagesHtml += `
+                            <div class="review-image-wrapper" style="position: relative; cursor: pointer;">
+                                <img src="/storage/${imagePath}" 
+                                     alt="Review image ${index + 1}" 
+                                     class="review-image" 
+                                     style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #e0e0e0;"
+                                     onclick="openReviewImageModal('${imagePath}', ${JSON.stringify(review.images).replace(/"/g, '&quot;')}, ${index})">
+                            </div>
+                        `;
+                    });
+                    imagesHtml += '</div>';
+                }
+                
                 reviewsContainer.innerHTML += `
                     <div class="review-card">
                         <div class="review-header">
@@ -617,6 +708,7 @@
                             <div class="review-date">${dateText}</div>
                         </div>
                         <p class="review-text">${review.comment}</p>
+                        ${imagesHtml}
                     </div>
                 `;
             });
@@ -678,70 +770,124 @@
             loadReviews(1, false);            
             // Attach click handler to load more button
             document.getElementById('loadMoreReviewsBtn').addEventListener('click', loadMoreReviews);
+            
+            // Handle image preview
+            document.getElementById('reviewImages').addEventListener('change', function(e) {
+                const files = e.target.files;
+                const previewContainer = document.getElementById('imagePreview');
+                previewContainer.innerHTML = '';
+                
+                if (files.length > 5) {
+                    alert('Maksimal 5 foto yang dapat diunggah');
+                    e.target.value = '';
+                    return;
+                }
+                
+                Array.from(files).forEach((file, index) => {
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert(`File ${file.name} terlalu besar. Maksimal 2MB per foto.`);
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const previewDiv = document.createElement('div');
+                        previewDiv.style.cssText = 'position: relative; width: 80px; height: 80px;';
+                        previewDiv.innerHTML = `
+                            <img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px; border: 1px solid #dee2e6;">
+                            <button type="button" onclick="removeImage(${index})" style="position: absolute; top: -8px; right: -8px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer;">×</button>
+                        `;
+                        previewContainer.appendChild(previewDiv);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+        });
+          function removeImage(index) {
+            const fileInput = document.getElementById('reviewImages');
+            const dt = new DataTransfer();
+            const files = fileInput.files;
+            
+            for (let i = 0; i < files.length; i++) {
+                if (i !== index) {
+                    dt.items.add(files[i]);
+                }
+            }
+            
+            fileInput.files = dt.files;
+            fileInput.dispatchEvent(new Event('change'));
+        }
+
+        // Review Image Modal Functions
+        let currentReviewImages = [];
+        let currentReviewImageIndex = 0;
+
+        function openReviewImageModal(imagePath, allImages, startIndex) {
+            currentReviewImages = allImages;
+            currentReviewImageIndex = startIndex;
+            
+            const modal = document.getElementById('reviewImageModal');
+            const img = document.getElementById('reviewImageLarge');
+            
+            img.src = `/storage/${imagePath}`;
+            modal.style.display = 'flex';
+            
+            // Update navigation button visibility
+            updateReviewNavButtons();
+        }
+
+        function closeReviewImageModal() {
+            const modal = document.getElementById('reviewImageModal');
+            modal.style.display = 'none';
+        }
+
+        function prevReviewImage() {
+            if (currentReviewImageIndex > 0) {
+                currentReviewImageIndex--;
+                updateReviewImage();
+            }
+        }
+
+        function nextReviewImage() {
+            if (currentReviewImageIndex < currentReviewImages.length - 1) {
+                currentReviewImageIndex++;
+                updateReviewImage();
+            }
+        }
+
+        function updateReviewImage() {
+            const img = document.getElementById('reviewImageLarge');
+            img.src = `/storage/${currentReviewImages[currentReviewImageIndex]}`;
+            updateReviewNavButtons();
+        }
+
+        function updateReviewNavButtons() {
+            const prevBtn = document.querySelector('.review-nav.prev');
+            const nextBtn = document.querySelector('.review-nav.next');
+            
+            prevBtn.style.display = currentReviewImageIndex > 0 ? 'block' : 'none';
+            nextBtn.style.display = currentReviewImageIndex < currentReviewImages.length - 1 ? 'block' : 'none';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('reviewImageModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeReviewImageModal();
+            }
         });
 
-        // Form submission untuk review baru
-        document.getElementById("reviewForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-            // Ambil nama dari backend, bukan dari input
-            const name = document.getElementById("reviewerName").value;
-            const comment = document.getElementById("reviewText").value;
-            const rating = selectedRating;
-            if (!name || !comment || rating === 0) {
-                alert('Mohon lengkapi semua field dan berikan rating!');
-                return;
+        // Keyboard navigation for review images
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('reviewImageModal');
+            if (modal.style.display === 'flex') {
+                if (e.key === 'Escape') {
+                    closeReviewImageModal();
+                } else if (e.key === 'ArrowLeft') {
+                    prevReviewImage();
+                } else if (e.key === 'ArrowRight') {
+                    nextReviewImage();
+                }
             }
-
-            // Tampilkan loading state pada tombol
-            const submitBtn = document.querySelector('.btn-submit');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
-            submitBtn.disabled = true;
-
-            fetch("/reviews", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-                },
-                body: JSON.stringify({ name, comment, rating, kos_id: {{ $kos->id }} })
-            })
-            .then(async response => {
-                let text = await response.text();
-                let data;
-                try {
-                    data = JSON.parse(text);
-                } catch (e) {
-                    alert('Terjadi kesalahan pada server.');
-                    return;
-                }                if (!response.ok) {
-                    // Tampilkan error validasi dari backend
-                    if (data.errors) {
-                        let msg = Object.values(data.errors).map(arr => arr.join(', ')).join('\n');
-                        alert(msg);
-                    } else {
-                        alert('Terjadi kesalahan pada server.');
-                    }
-                    // Reset tombol ke kondisi semula
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                    return;                }
-                // Reload reviews from first page after successful submission
-                currentPage = 1;
-                loadReviews(1, false);
-                
-                // Reset tombol ke kondisi semula
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                closeModal();
-            })
-            .catch(error => {
-                // Reset tombol jika terjadi error
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                alert("Terjadi kesalahan");
-                console.error(error);
-            });
         });
     </script>
 </body>

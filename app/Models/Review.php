@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
 {
-    use HasFactory;
+    use HasFactory;    protected $fillable = [
+        'kos_id', 'name', 'rating', 'comment', 'images',
+    ];
 
-    protected $fillable = [
-        'kos_id', 'name', 'rating', 'comment',
+    protected $casts = [
+        'images' => 'array',
     ];
 
     public function kos()
