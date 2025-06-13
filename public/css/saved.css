@@ -118,7 +118,7 @@
 .properties-grid {
     display: flex;
     flex-direction: row;
-    gap: 15px;
+    gap: 24px;
     overflow-x: auto;
     overflow-y: hidden;
     padding-bottom: 8px;
