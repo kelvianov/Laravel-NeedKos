@@ -23,11 +23,9 @@ class ReviewController extends Controller
 
         $review = Review::create($validated);
         return response()->json(['success' => true, 'review' => $review]);
-    }
-
-    public function index($kos_id)
+    }    public function index($kos_id)
     {
-        $perPage = request('per_page', 5);
+        $perPage = request('per_page', 7);
         $reviews = Review::where('kos_id', $kos_id)
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);

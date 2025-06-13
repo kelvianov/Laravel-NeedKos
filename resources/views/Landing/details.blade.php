@@ -137,11 +137,29 @@
                         <i class="fas fa-plus"></i>
                         Login untuk tambah ulasan
                     </a>
-                @endauth
-            </div>
-            <div id="reviews-container"></div>
-            <div id="load-more-reviews-container" style="text-align:center;margin-top:16px;">
-                <button id="loadMoreReviewsBtn" style="display:none;" class="btn btn-secondary">Lihat Lebih Banyak</button>
+                @endauth            </div>
+            <div id="reviews-container"></div>            <!-- Load More Button - Inside review section -->
+            <div id="load-more-reviews-container" style="text-align:center;margin-top:24px;display:block;">
+                <button id="loadMoreReviewsBtn" style="
+                    background: #f8f9fa;
+                    color: #495057;
+                    border: 1px solid #dee2e6;
+                    padding: 10px 24px;
+                    border-radius: 6px;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                " 
+                onmouseover="this.style.background='#e9ecef'; this.style.borderColor='#e9ecef';"
+                onmouseout="this.style.background='#f8f9fa'; this.style.borderColor='#dee2e6';"
+                onclick="loadMoreReviews()">
+                    <i class="fas fa-chevron-down" style="font-size: 0.75rem;"></i>
+                    Tampilkan Lebih Banyak
+                </button>
             </div>
         </div>
 
@@ -564,41 +582,106 @@
                 closeModal();
             }
         });
-    </script>
-    <script>        // Fetch and render reviews from backend (paginated)
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch(`/reviews/{{ $kos->id }}`)
-                .then(response => response.json())
-                .then(res => {
-                    const reviewsContainer = document.getElementById('reviews-container');
-                    reviewsContainer.innerHTML = '';
-                    const reviews = res.data || [];
-                    if (reviews.length === 0) {
-                        reviewsContainer.innerHTML = '<div class="review-card"><p class="review-text">Belum ada ulasan.</p></div>';
-                        return;
-                    }
-                    reviews.forEach(review => {
-                        let starsHtml = '';
-                        for (let i = 1; i <= 5; i++) {
-                            starsHtml += `<i class="${i <= review.rating ? 'fas' : 'far'} fa-star"></i>`;
-                        }
-                        const dateText = timeAgo(new Date(review.created_at));
-                        reviewsContainer.innerHTML += `
-                            <div class="review-card">
-                                <div class="review-header">
-                                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(review.name)}&background=222222&color=ffffff&size=48" alt="${review.name}" class="reviewer-avatar">
-                                    <div class="reviewer-info">
-                                        <h4>${review.name}</h4>
-                                        <div class="review-stars">${starsHtml}</div>
-                                    </div>
-                                    <div class="review-date">${dateText}</div>
-                                </div>
-                                <p class="review-text">${review.comment}</p>
+    </script>    <script>
+        // Review pagination dengan load more - tampilkan 7 pertama, load 7 lagi setiap klik
+        let currentPage = 1;
+        const reviewsPerPage = 7;
+        let hasMoreReviews = true;
+        let isLoadingReviews = false;
+
+        function renderReviews(reviews, append = false) {
+            const reviewsContainer = document.getElementById('reviews-container');
+            if (!append) {
+                reviewsContainer.innerHTML = '';
+            }
+            
+            if (reviews.length === 0 && !append) {
+                reviewsContainer.innerHTML = '<div class="review-card"><p class="review-text">Belum ada ulasan.</p></div>';
+                return;
+            }
+            
+            reviews.forEach(review => {
+                let starsHtml = '';
+                for (let i = 1; i <= 5; i++) {
+                    starsHtml += `<i class="${i <= review.rating ? 'fas' : 'far'} fa-star"></i>`;
+                }
+                const dateText = timeAgo(new Date(review.created_at));
+                reviewsContainer.innerHTML += `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(review.name)}&background=222222&color=ffffff&size=48" alt="${review.name}" class="reviewer-avatar">
+                            <div class="reviewer-info">
+                                <h4>${review.name}</h4>
+                                <div class="review-stars">${starsHtml}</div>
                             </div>
-                        `;
-                    });
+                            <div class="review-date">${dateText}</div>
+                        </div>
+                        <p class="review-text">${review.comment}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function loadReviews(page = 1, append = false) {
+            if (isLoadingReviews) return;
+            isLoadingReviews = true;
+            
+            const loadMoreBtn = document.getElementById('loadMoreReviewsBtn');
+            if (append) {
+                loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat...';
+                loadMoreBtn.disabled = true;
+            }
+            
+            fetch(`/reviews/{{ $kos->id }}?per_page=${reviewsPerPage}&page=${page}`)
+                .then(response => response.json())                .then(data => {
+                    const reviews = data.data || [];
+                    renderReviews(reviews, append);
+                    
+                    // Check if there are more reviews - simplified logic
+                    hasMoreReviews = reviews.length === reviewsPerPage;
+                    
+                    // Show/hide load more button
+                    const loadMoreContainer = document.getElementById('load-more-reviews-container');
+                    const loadMoreBtn = document.getElementById('loadMoreReviewsBtn');
+                    
+                    if (hasMoreReviews && reviews.length > 0) {
+                        loadMoreContainer.style.display = 'block';
+                        loadMoreBtn.style.display = 'inline-block';
+                        loadMoreBtn.innerHTML = 'Lihat Lebih Banyak';
+                        loadMoreBtn.disabled = false;
+                    } else {
+                        loadMoreBtn.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading reviews:', error);
+                    if (append) {
+                        loadMoreBtn.innerHTML = 'Lihat Lebih Banyak';
+                        loadMoreBtn.disabled = false;
+                    }
+                })
+                .finally(() => {
+                    isLoadingReviews = false;
                 });
-        });        document.getElementById("reviewForm").addEventListener("submit", function (e) {
+        }
+
+        // Load more button click handler
+        function loadMoreReviews() {
+            if (hasMoreReviews && !isLoadingReviews) {
+                currentPage++;
+                loadReviews(currentPage, true);
+            }
+        }
+
+        // Initial load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadReviews(1, false);            
+            // Attach click handler to load more button
+            document.getElementById('loadMoreReviewsBtn').addEventListener('click', loadMoreReviews);
+        });
+
+        // Form submission untuk review baru
+        document.getElementById("reviewForm").addEventListener("submit", function (e) {
             e.preventDefault();
             // Ambil nama dari backend, bukan dari input
             const name = document.getElementById("reviewerName").value;
@@ -642,39 +725,11 @@
                     // Reset tombol ke kondisi semula
                     submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
-                    return;
-                }
-                // Reload reviews only (use .data)
-                fetch(`/reviews/{{ $kos->id }}`)
-                    .then(response => response.json())
-                    .then(res => {
-                        const reviewsContainer = document.getElementById('reviews-container');
-                        reviewsContainer.innerHTML = '';
-                        const reviews = res.data || [];
-                        if (reviews.length === 0) {
-                            reviewsContainer.innerHTML = '<div class="review-card"><p class="review-text">Belum ada ulasan.</p></div>';
-                            return;
-                        }
-                        reviews.forEach(review => {
-                            let starsHtml = '';
-                            for (let i = 1; i <= 5; i++) {
-                                starsHtml += `<i class="${i <= review.rating ? 'fas' : 'far'} fa-star"></i>`;
-                            }
-                            const dateText = timeAgo(new Date(review.created_at));
-                            reviewsContainer.innerHTML += `
-                                <div class="review-card">
-                                    <div class="review-header">
-                                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(review.name)}&background=222222&color=ffffff&size=48" alt="${review.name}" class="reviewer-avatar">
-                                        <div class="reviewer-info">
-                                            <h4>${review.name}</h4>
-                                            <div class="review-stars">${starsHtml}</div>
-                                        </div>
-                                        <div class="review-date">${dateText}</div>
-                                    </div>
-                                    <p class="review-text">${review.comment}</p>
-                                </div>
-                            `;                        });
-                    });
+                    return;                }
+                // Reload reviews from first page after successful submission
+                currentPage = 1;
+                loadReviews(1, false);
+                
                 // Reset tombol ke kondisi semula
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
