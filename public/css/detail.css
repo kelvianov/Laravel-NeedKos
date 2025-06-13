@@ -171,29 +171,23 @@
         .property-badges {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
+            gap: 10px;
+            margin-bottom: 8px;
+        }        .property-badges .save-button {
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            color: #000;
+            transition: color 0.2s ease;
         }
 
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            gap: 6px;
-            text-transform: uppercase;
+        .property-badges .save-button:hover {
+            color: #333;
         }
 
-        .badge-type {
-            background: #222;
-            color: #fff;
-        }
-
-        .badge-status {
-            background: #16a34a;
-            color: #fff;
+        .property-badges .save-button.saved {
+            color: #000;
         }
 
         .rating-text {
@@ -283,7 +277,16 @@
             background: #333;
         }
 
-        /* Navigation Tabs */
+        /* Action Buttons Container */
+.action-buttons {
+    margin-top: 8px;
+}
+
+.action-buttons .book-button {
+    width: 100%;
+}
+
+/* Navigation Tabs */
         .property-nav {
             border-bottom: 2px solid #f1f5f9;
             margin-bottom: 25px;
@@ -1098,4 +1101,56 @@ button.add-review-btn:visited {
     border: 0 !important;
     box-shadow: none !important;
     text-decoration: none !important;
+}
+
+/* Save Button Icon Styling */
+.save-button {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.save-button:focus,
+.save-button:active {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+#saveIcon {
+    font-size: 1.2rem;
+    outline: none !important;
+    border: none !important;
+}
+
+.action-buttons .save-button i {
+    font-size: 1.2rem;
+    outline: none !important;
+    border: none !important;
+}
+
+/* Badge Styling */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 20px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    gap: 6px;
+}
+
+.badge-type {
+    background: #222;
+    color: #fff;
+}
+
+.badge-status-available {
+    background: #16a34a;
+    color: #fff;
+}
+
+.badge-status-unavailable {
+    background: #dc2626;
+    color: #fff;
 }

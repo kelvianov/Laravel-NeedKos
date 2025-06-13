@@ -58,18 +58,15 @@
 
         <!-- Property Header -->
         <div class="property-header">
-            <div class="property-info-left">                
-                <div class="property-badges">
+            <div class="property-info-left">                  <div class="property-badges">
                     <span class="badge badge-type">
                         {{ $kos->gender_label ?? 'Kos' }}
                     </span>
-                </div>
-
-                <div class="title-with-save">
-                    <h1 class="property-title">{{ $kos->name }}</h1>
                     <button id="saveButton" class="save-button" onclick="toggleSave({{ $kos->id }})" title="Simpan properti ini">
                         <i id="saveIcon" class="far fa-bookmark"></i>
                     </button>
+                </div><div class="title-with-save">
+                    <h1 class="property-title">{{ $kos->name }}</h1>
                 </div>
 
                 <div class="property-rating">
@@ -82,13 +79,12 @@
                 </div>
 
                 <div class="property-location">{{ $kos->address }}</div>
-            </div>
-
-            <div class="price-section">
+            </div>            <div class="price-section">
                 <div class="price-label">Mulai dari</div>
                 <div class="price-main">IDR {{ number_format($kos->price, 0, ',', '.') }}</div>
-                <div class="price-period">/bulan</div>
-                <button class="book-button">Yuk, Booking Sekarang!</button>
+                <div class="price-period">/bulan</div>                <div class="action-buttons">
+                    <button class="book-button">Yuk, Booking Sekarang!</button>
+                </div>
             </div>
         </div>
 
