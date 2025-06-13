@@ -50,10 +50,8 @@
                                 <p>Kota Berbeda</p>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Properties Grid Carousel Controls -->
-                    <div class="section-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    </div>                    <!-- Properties Grid Carousel Controls -->
+                    <div class="section-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
                         <div style="font-weight:600;font-size:1.1rem;color:#222;">Properti Tersimpan</div>
                         <div class="carousel-buttons">
                             <button class="carousel-btn prev-btn" aria-label="Previous" style="border:none;background:#fff;padding:8px 12px;border-radius:6px;margin-right:4px;box-shadow:0 1px 4px #eee;cursor:pointer;">
