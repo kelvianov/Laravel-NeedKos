@@ -85,7 +85,7 @@ Route::get('/careers', function () {
 })->name('careers');
 
 Route::get('/report-problem', function () {
-    return view('footercontent.support.report');
+    return view('footercontent.product.report');
 })->name('report.problem');
 
 // Password Reset Routes only (login/register handled by custom AuthController)
