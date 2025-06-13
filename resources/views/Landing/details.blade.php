@@ -88,7 +88,7 @@
                 <div class="price-label">Mulai dari</div>
                 <div class="price-main">IDR {{ number_format($kos->price, 0, ',', '.') }}</div>
                 <div class="price-period">/bulan</div>
-                <button class="book-button">Lihat kamar</button>
+                <button class="book-button">Yuk, Booking Sekarang!</button>
             </div>
         </div>
 
@@ -97,7 +97,7 @@
             <div class="nav-tabs">
                 <button class="nav-tab active" onclick="showTab('info')">Info Umum</button>
                 <button class="nav-tab" onclick="showTab('review')">Review</button>
-                <button class="nav-tab" onclick="showTab('fasilitas')">Fasilitas Populer</button>
+                <button class="nav-tab" onclick="showTab('fasilitas')">Fasilitas Favorit</button>
                 <button class="nav-tab" onclick="showTab('lokasi')">Lokasi</button>
                 <button class="nav-tab" onclick="showTab('kebijakan')">Kebijakan Akomodasi</button>
                 <button class="nav-tab" onclick="showTab('tentang')">Tentang</button>
@@ -107,7 +107,7 @@
 
         <!-- Content Sections -->
         <div class="content-section active" id="info">
-            <h3>Tentang {{ $kos->name }}</h3>
+            <h3>Kenapa Sih Harus {{ $kos->name }} ?</h3>
             <p>{{ $kos->description }}</p>
 
             <h3>Peraturan Kos</h3>
@@ -195,7 +195,7 @@
         @endphp
 
         <div class="content-section" id="fasilitas">
-            <h3>Fasilitas Populer</h3>
+            <h3>Fasilitas Favorit</h3>
             <div class="facilities-grid">
                 @foreach ($kos->facilities ?? [] as $facilityKey)
                     @if (isset($facilitiesList[$facilityKey]))
@@ -209,16 +209,18 @@
         </div>
 
         <div class="content-section" id="lokasi">
-            <h3>Lokasi</h3>
-            <p><i class="fas fa-map-marker-alt"></i> {{ $kos->address }}</p>
+            <h3>Lokasi Strategis</h3>
+            <p class="lokasi-desc">Akses mudah ke mana saja, bikin aktivitas harian makin praktis!</p>
             <div class="map-container" style="margin-top: 24px; border-radius: 12px; overflow: hidden;">
                 <iframe src="https://www.google.com/maps?q={{ urlencode($kos->address) }}&output=embed"
                         width="100%" height="350" frameborder="0" style="border:0;" allowfullscreen=""
                         loading="lazy" referrerpolicy="no-referrer-when-downgrade">
                 </iframe>
             </div>
-            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($kos->address) }}"
-               target="_blank" class="btn-lihat-maps"></a>
+            <div class="cta-buttons" style="margin-top: -10px; margin-left: -30px; justify-content: flex-start;">
+                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($kos->address) }}"
+                   target="_blank" class="cta-btn primary">Lihat Lokasi di Google Maps</a>
+            </div>
         </div>
 
         <div class="content-section" id="kebijakan">

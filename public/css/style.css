@@ -93,21 +93,33 @@
         .properties {
             padding: 5rem 0;
             background: white;
+             overflow: hidden;
         }
 
-        .properties-grid {
+       .properties-grid {
             display: flex;
-            gap: 24px;
-            transition: transform 0.3s ease;
-            width: max-content; /* Memungkinkan content menggeser horizontal */
+                gap: 24px;
+                overflow-x: auto;
+                scroll-behavior: smooth;
+                padding: 0 10px;
+
+                /* Sembunyikan scrollbar */
+                scrollbar-width: none; /* Firefox */
+                -ms-overflow-style: none;  /* Internet Explorer & Edge */
+            }
+
+            .properties-grid::-webkit-scrollbar {
+                display: none; /* Chrome, Safari, Opera */
         }
 
-        .property-card {
+            .property-card {
             width: calc((100vw - 48px - 48px) / 3); /* (viewport - padding - gaps) / 3 cards */
             max-width: 380px;
             flex-shrink: 0;
+            margin-right: -10px;
             border: none;
             transition: all 0.3s ease;
+
         }
 
         .property-card:hover {
@@ -125,6 +137,8 @@
         .property-info {
             padding: 1.5rem;
         }
+
+        
 
         .property-price {
             font-size: 1.5rem;

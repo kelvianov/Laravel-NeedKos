@@ -3,7 +3,7 @@
         <div class="footer-content">
             <div class="footer-brand">
                 <h3 class="footer-logo">KosKu</h3>
-                <p class="footer-desc">Find and book quality accommodations across Indonesia. Your trusted platform for hassle-free room hunting.</p>
+                <p class="footer-desc">Temukan dan booking akomodasi berkualitas di seluruh Indonesia. Platform terpercaya untuk pencarian kamar tanpa ribet.</p>
             </div>
 
             <div class="footer-links">
