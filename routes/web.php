@@ -58,10 +58,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/reviews/{kos_id}', [ReviewController::class, 'index']);
 Route::post('/reviews', [ReviewController::class, 'store']);
 
-Route::get('/test-saved', function () {
-    return view('test-saved');
-})->name('test.saved');
-
 Route::get('/help-center', [HelpController::class, 'index'])->name('help.center');
 Route::get('/help-center/search', [HelpController::class, 'search'])->name('help.search');
 
