@@ -4,9 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Karir - KosKu</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
+    
+    
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
+      <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        /* Button search navbar bentuk oval/lonjong */
+        .nav-search-btn {
+            border-radius: 24px !important;
+            padding: 4px 14px !important;
+            min-width: 42px !important;
+            height: 30px !important;
+            width: auto !important;
+        }
         
         body {
             font-family: 'Inter', sans-serif;
