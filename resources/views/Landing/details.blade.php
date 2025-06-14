@@ -6,6 +6,29 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Detail Kos - KosKu</title>    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+    <!-- Custom CSS for star colors -->
+    <style>
+    .rating-filter-btn {
+        position: relative;
+    }
+    
+    .rating-filter-btn .star-yellow {
+        color: #fbbf24 !important; /* Bright yellow color */
+    }
+    
+    .rating-filter-btn .star-gray {
+        color: #d1d5db !important; /* Light gray color */
+    }
+    
+    .rating-filter-btn.active .star-yellow {
+        color: #fcd34d !important; /* Lighter yellow when active */
+    }
+    
+    .rating-filter-btn.active .star-gray {
+        color: #9ca3af !important; /* Darker gray when active */
+    }
+    </style>
+
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/detail.css') }}">
 </head>
@@ -158,8 +181,7 @@
                     white-space: nowrap;
                     outline: none;
                 ">All ratings</button>
-                
-                <button class="rating-filter-btn" data-rating="5" style="
+                  <button class="rating-filter-btn" data-rating="5" style="
                     padding: 8px 16px; 
                     border-radius: 20px; 
                     border: 1px solid #d1d5db; 
@@ -171,7 +193,9 @@
                     transition: all 0.2s ease;
                     white-space: nowrap;
                     outline: none;
-                ">★★★★★</button>
+                ">
+                    <span class="star-yellow">★★★★★</span>
+                </button>
                 
                 <button class="rating-filter-btn" data-rating="4" style="
                     padding: 8px 16px; 
@@ -185,7 +209,9 @@
                     transition: all 0.2s ease;
                     white-space: nowrap;
                     outline: none;
-                ">★★★★☆</button>
+                ">
+                    <span class="star-yellow">★★★★</span><span class="star-gray">★</span>
+                </button>
                 
                 <button class="rating-filter-btn" data-rating="3" style="
                     padding: 8px 16px; 
@@ -199,7 +225,9 @@
                     transition: all 0.2s ease;
                     white-space: nowrap;
                     outline: none;
-                ">★★★☆☆</button>
+                ">
+                    <span class="star-yellow">★★★</span><span class="star-gray">★★</span>
+                </button>
                 
                 <button class="rating-filter-btn" data-rating="2" style="
                     padding: 8px 16px; 
@@ -213,7 +241,9 @@
                     transition: all 0.2s ease;
                     white-space: nowrap;
                     outline: none;
-                ">★★☆☆☆</button>
+                ">
+                    <span class="star-yellow">★★</span><span class="star-gray">★★★</span>
+                </button>
                 
                 <button class="rating-filter-btn" data-rating="1" style="
                     padding: 8px 16px; 
@@ -227,7 +257,9 @@
                     transition: all 0.2s ease;
                     white-space: nowrap;
                     outline: none;
-                ">★☆☆☆☆</button>
+                ">
+                    <span class="star-yellow">★</span><span class="star-gray">★★★★</span>
+                </button>
                 
                 <!-- Separator -->
                 <div style="width: 1px; height: 24px; background: #e5e7eb; margin: 0 8px;"></div>
