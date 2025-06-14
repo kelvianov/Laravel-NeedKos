@@ -100,6 +100,7 @@ body {
     background-color: #f8f9fa;
     margin: 0;
     padding: 0;
+    zoom: 0.9;
 }
 
 .container {

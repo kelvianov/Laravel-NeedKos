@@ -11,6 +11,7 @@
         body {
             font-family: 'Inter', sans-serif;
             padding-top: 80px;
+            zoom: 0.9;
         }
 
         .fade-in {

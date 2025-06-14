@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Help Center - KosKu</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <style>
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">    <style>
+        body {
+            zoom: 0.9;
+        }
+        
         .help-center {
             padding-top: 100px;
             padding-bottom: 80px;

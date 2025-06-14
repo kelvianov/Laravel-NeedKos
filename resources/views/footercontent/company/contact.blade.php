@@ -17,6 +17,7 @@
             line-height: 1.6;
             color: #222;
             background: #fff;
+            zoom:0.9;
         }
 
         .header {
@@ -30,7 +31,7 @@
         /* Hero Section */
         .hero {
             padding-top: 100px;
-            background: linear-gradient(to bottom right, #222, #444);
+            background: linear-gradient(to bottom right, #000000, #000000);
             color: #fff;
             text-align: center;
             padding-bottom: 80px;
@@ -72,7 +73,7 @@
             background: #fff;
             padding: 40px;
             border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             border: 1px solid #eee;
         }
 

@@ -15,8 +15,9 @@
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            color: #222;
+            color: #000000;
             background: #fff;
+            zoom:0.9;
         }
 
         .header {
@@ -30,7 +31,7 @@
         /* Hero Section */
         .hero {
             padding-top: 100px;
-            background: linear-gradient(to bottom right, #222, #444);
+            background: linear-gradient(to bottom right, #222, #000000);
             color: #fff;
             text-align: center;
             padding-bottom: 80px;

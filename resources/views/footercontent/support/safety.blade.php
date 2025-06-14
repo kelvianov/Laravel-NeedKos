@@ -18,10 +18,11 @@
             line-height: 1.6;
             color: #333;
             background-color: #f8f9fa;
+            zoom: 0.9;
         }
 
         .safety-hero {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
             color: white;
             padding: 120px 0 80px;
             text-align: center;
