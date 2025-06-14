@@ -19,9 +19,8 @@
             <div class="report-header">
                 <h1>Report a Problem</h1>
                 <p>Help us improve by reporting any issues you've encountered</p>
-            </div>
-
-            <form id="reportForm">
+            </div>            <form id="reportForm">
+                @csrf
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="name">Full Name</label>
@@ -34,6 +33,7 @@
                 </div>                <div class="form-group">
                     <label class="form-label" for="category">Problem Category</label>
                     <select id="category" name="category" class="form-select" required>
+                        <option value="">Select a category</option>
                         <option value="account">Account Issues</option>
                         <option value="payment">Payment Problems</option>
                         <option value="technical">Technical Problems</option>
@@ -74,11 +74,13 @@
                 </button>
             </form>
         </div>
-    </main>
-
-    <script>
+    </main>    <script>
         document.getElementById('reportForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            const formData = new FormData(this);
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalText = submitBtn.innerHTML;
             
             // Simple frontend validation
             const name = document.getElementById('name').value.trim();
@@ -93,17 +95,45 @@
                 return;
             }
 
-            // Simulate form submission
-            const submitBtn = document.querySelector('.submit-btn');
-            const originalText = submitBtn.innerHTML;
-            
+            // Show loading state
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
             submitBtn.disabled = true;
 
-            setTimeout(() => {
-                alert('Thank you! Your report has been submitted successfully. We will review it and get back to you soon.');                document.getElementById('reportForm').reset();                submitBtn.innerHTML = originalText;
+            // Send AJAX request
+            fetch('{{ route("reports.store") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    'Accept': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Thank you! Your report has been submitted successfully. We will review it and get back to you soon.');
+                    document.getElementById('reportForm').reset();
+                      if (window.categoryChoices) {
+                        window.categoryChoices.setChoiceByValue('');
+                    }
+                } else {
+                    let errorMessage = 'There was an error submitting your report. Please try again.';
+                    if (data.errors) {
+                        errorMessage = Object.values(data.errors).flat().join('\n');
+                    } else if (data.message) {
+                        errorMessage = data.message;
+                    }
+                    alert(errorMessage);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was an error submitting your report. Please try again.');
+            })
+            .finally(() => {
+                submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
-            }, 2000);
+            });
         });
     </script>
 
@@ -112,7 +142,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const categoryElement = document.getElementById('category');
             if (categoryElement) {
-                new Choices(categoryElement, {
+                window.categoryChoices = new Choices(categoryElement, {
                     searchEnabled: false,
                     itemSelectText: '',
                     shouldSort: false,

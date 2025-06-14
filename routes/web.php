@@ -8,6 +8,7 @@ use App\Http\Controllers\HelpController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\SavedKosController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('testimonials', [LandingController::class, 'testomonials'])->name('landing.testimonials');
@@ -84,9 +85,8 @@ Route::get('/careers', function () {
     return view('footercontent.company.careers');
 })->name('careers');
 
-Route::get('/report-problem', function () {
-    return view('footercontent.product.report');
-})->name('report.problem');
+Route::get('/report-problem', [ReportController::class, 'index'])->name('report.problem');
+Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
 
 // Password Reset Routes only (login/register handled by custom AuthController)
 Auth::routes(['login' => false, 'register' => false, 'reset' => true, 'verify' => false]);

@@ -11,6 +11,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
+use Filament\Notifications\Livewire\DatabaseNotifications;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -21,6 +22,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Widgets\TotalKosWidget;
 use App\Filament\Widgets\TotalOwnersWidget;
 use App\Filament\Widgets\TotalTenantsWidget;
+use App\Filament\Widgets\RecentReportsWidget;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -31,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->authGuard('web')
             ->brandName('Kosku Admin')
             ->colors([
                 'primary' => Color::Gray,
@@ -52,7 +55,10 @@ class AdminPanelProvider extends PanelProvider
                 TotalKosWidget::class,
                 TotalOwnersWidget::class,
                 TotalTenantsWidget::class,
+                RecentReportsWidget::class,
             ])
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
