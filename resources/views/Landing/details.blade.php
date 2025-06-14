@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Detail Kos - KosKu</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Detail Kos - KosKu</title>    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/detail.css') }}">
@@ -133,7 +131,131 @@
                         <i class="fas fa-plus"></i>
                         Login untuk tambah ulasan
                     </a>
-                @endauth            </div>
+                @endauth            </div>            <!-- FILTER REVIEW (tidak mengubah tampilan lain) -->
+            <div id="review-filters" style="
+                margin: 32px 0 24px 0; 
+                padding: 0; 
+                display: flex; 
+                gap: 8px; 
+                align-items: center; 
+                flex-wrap: wrap;
+                border-bottom: 1px solid #e5e7eb;
+                padding-bottom: 16px;
+            ">
+                <span style="font-size: 15px; font-weight: 500; color: #374151; margin-right: 8px;">Filter by:</span>
+                
+                <!-- Rating Filter Buttons -->
+                <button class="rating-filter-btn active" data-rating="all" style="
+                    padding: 8px 16px; 
+                    border-radius: 20px; 
+                    border: 1px solid #d1d5db; 
+                    background: #111827; 
+                    color: white; 
+                    font-size: 14px; 
+                    font-weight: 500;
+                    cursor: pointer; 
+                    transition: all 0.2s ease;
+                    white-space: nowrap;
+                    outline: none;
+                ">All ratings</button>
+                
+                <button class="rating-filter-btn" data-rating="5" style="
+                    padding: 8px 16px; 
+                    border-radius: 20px; 
+                    border: 1px solid #d1d5db; 
+                    background: white; 
+                    color: #374151; 
+                    font-size: 14px; 
+                    font-weight: 500;
+                    cursor: pointer; 
+                    transition: all 0.2s ease;
+                    white-space: nowrap;
+                    outline: none;
+                ">★★★★★</button>
+                
+                <button class="rating-filter-btn" data-rating="4" style="
+                    padding: 8px 16px; 
+                    border-radius: 20px; 
+                    border: 1px solid #d1d5db; 
+                    background: white; 
+                    color: #374151; 
+                    font-size: 14px; 
+                    font-weight: 500;
+                    cursor: pointer; 
+                    transition: all 0.2s ease;
+                    white-space: nowrap;
+                    outline: none;
+                ">★★★★☆</button>
+                
+                <button class="rating-filter-btn" data-rating="3" style="
+                    padding: 8px 16px; 
+                    border-radius: 20px; 
+                    border: 1px solid #d1d5db; 
+                    background: white; 
+                    color: #374151; 
+                    font-size: 14px; 
+                    font-weight: 500;
+                    cursor: pointer; 
+                    transition: all 0.2s ease;
+                    white-space: nowrap;
+                    outline: none;
+                ">★★★☆☆</button>
+                
+                <button class="rating-filter-btn" data-rating="2" style="
+                    padding: 8px 16px; 
+                    border-radius: 20px; 
+                    border: 1px solid #d1d5db; 
+                    background: white; 
+                    color: #374151; 
+                    font-size: 14px; 
+                    font-weight: 500;
+                    cursor: pointer; 
+                    transition: all 0.2s ease;
+                    white-space: nowrap;
+                    outline: none;
+                ">★★☆☆☆</button>
+                
+                <button class="rating-filter-btn" data-rating="1" style="
+                    padding: 8px 16px; 
+                    border-radius: 20px; 
+                    border: 1px solid #d1d5db; 
+                    background: white; 
+                    color: #374151; 
+                    font-size: 14px; 
+                    font-weight: 500;
+                    cursor: pointer; 
+                    transition: all 0.2s ease;
+                    white-space: nowrap;
+                    outline: none;
+                ">★☆☆☆☆</button>
+                
+                <!-- Separator -->
+                <div style="width: 1px; height: 24px; background: #e5e7eb; margin: 0 8px;"></div>
+                
+                <!-- Image Filter Button -->
+                <button id="filter-image" data-active="0" style="
+                    padding: 8px 16px; 
+                    border-radius: 20px; 
+                    border: 1px solid #d1d5db; 
+                    background: white; 
+                    color: #374151; 
+                    font-size: 14px; 
+                    font-weight: 500;
+                    cursor: pointer; 
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    outline: none;
+                    white-space: nowrap;
+                ">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.7;">
+                        <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                    </svg>
+                    With photos
+                </button>
+            </div>
+
             <div id="reviews-container"></div>            <!-- Load More Button - Inside review section -->
             <div id="load-more-reviews-container" style="text-align:center;margin-top:24px;display:block;">
                 <button id="loadMoreReviewsBtn" style="
@@ -891,7 +1013,167 @@
                     nextReviewImage();
                 }
             }
+        });    </script>
+      <!-- FILTER LOGIC REVIEW -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    function applyReviewFilters() {
+        var activeRatingBtn = document.querySelector('.rating-filter-btn.active');
+        var rating = activeRatingBtn ? activeRatingBtn.getAttribute('data-rating') : 'all';
+        var imageActive = document.getElementById('filter-image').getAttribute('data-active') === '1';
+        var cards = document.querySelectorAll('.review-card');
+        var visibleCount = 0;
+        
+        cards.forEach(function(card) {
+            var show = true;
+            if (rating !== 'all') {
+                var stars = card.querySelectorAll('.review-stars .fa-star.fas').length;
+                if (parseInt(rating) !== stars) show = false;
+            }
+            if (imageActive) {
+                var img = card.querySelector('.review-images');
+                if (!img || img.children.length === 0) show = false;
+            }
+            card.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
         });
-    </script>
+        
+        // Tampilkan/sembunyikan pesan jika tidak ada hasil
+        var noResultsMsg = document.getElementById('no-filter-results');
+        var hasActiveFilter = rating !== 'all' || imageActive;
+        
+        if (hasActiveFilter && visibleCount === 0) {
+            if (!noResultsMsg) {
+                // Buat pesan baru jika belum ada
+                noResultsMsg = document.createElement('div');
+                noResultsMsg.id = 'no-filter-results';
+                noResultsMsg.style.cssText = 'text-align: center; padding: 48px 24px; color: #64748b; background: #f8fafc; border-radius: 12px; margin: 24px 0; border: 1px solid #e2e8f0;';
+                noResultsMsg.innerHTML = '<div style="max-width: 400px; margin: 0 auto;"><h3 style="font-size: 18px; font-weight: 600; color: #334155; margin-bottom: 8px; line-height: 1.4;">No reviews match your criteria</h3><p style="font-size: 14px; color: #64748b; margin-bottom: 16px; line-height: 1.5;">Try adjusting your filters or clear all filters to see all reviews.</p><button onclick="resetAllFilters();" style="background: #000; color: white; padding: 8px 16px; border-radius: 6px; border: none; font-size: 14px; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background=\'#333\'" onmouseout="this.style.background=\'#000\'">Clear Filters</button></div>';
+                document.getElementById('reviews-container').appendChild(noResultsMsg);
+            }
+            noResultsMsg.style.display = 'block';
+        } else {
+            if (noResultsMsg) {
+                noResultsMsg.style.display = 'none';
+            }
+        }
+    }
+    
+    // Reset all filters function
+    function resetAllFilters() {
+        // Reset rating buttons
+        document.querySelectorAll('.rating-filter-btn').forEach(function(btn) {
+            btn.classList.remove('active');
+            btn.style.background = 'white';
+            btn.style.color = '#374151';
+        });
+        var allBtn = document.querySelector('.rating-filter-btn[data-rating="all"]');
+        if (allBtn) {
+            allBtn.classList.add('active');
+            allBtn.style.background = '#111827';
+            allBtn.style.color = 'white';
+        }
+        
+        // Reset image filter button
+        var imgBtn = document.getElementById('filter-image');
+        if (imgBtn) {
+            imgBtn.setAttribute('data-active', '0');
+            imgBtn.style.background = 'white';
+            imgBtn.style.color = '#374151';
+        }
+        
+        // Apply filters to show all reviews
+        applyReviewFilters();
+    }
+    
+    // Make resetAllFilters global for the inline onclick
+    window.resetAllFilters = resetAllFilters;
+    
+    // Setup event listeners
+    var ratingBtns = document.querySelectorAll('.rating-filter-btn');
+    var imgBtn = document.getElementById('filter-image');
+    
+    console.log('Found rating buttons:', ratingBtns.length); // Debug log
+    console.log('Found image button:', imgBtn); // Debug log
+    
+    if (ratingBtns.length > 0) {
+        // Rating button click handlers
+        ratingBtns.forEach(function(btn, index) {
+            console.log('Setting up button', index, btn); // Debug log
+            btn.addEventListener('click', function(e) {
+                console.log('Button clicked:', btn.getAttribute('data-rating')); // Debug log
+                e.preventDefault();
+                
+                // Remove active from all buttons
+                ratingBtns.forEach(function(b) {
+                    b.classList.remove('active');
+                    b.style.background = 'white';
+                    b.style.color = '#374151';
+                });
+                
+                // Add active to clicked button
+                btn.classList.add('active');
+                btn.style.background = '#111827';
+                btn.style.color = 'white';
+                
+                applyReviewFilters();
+            });
+            
+            // Hover effects for non-active buttons
+            btn.addEventListener('mouseenter', function() {
+                if (!btn.classList.contains('active')) {
+                    btn.style.background = '#f9fafb';
+                    btn.style.borderColor = '#9ca3af';
+                }
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                if (!btn.classList.contains('active')) {
+                    btn.style.background = 'white';
+                    btn.style.borderColor = '#d1d5db';
+                }
+            });
+        });
+    }
+    
+    if (imgBtn) {
+        // Image filter button click handler
+        imgBtn.addEventListener('click', function(e) {
+            console.log('Image button clicked'); // Debug log
+            e.preventDefault();
+            
+            var active = imgBtn.getAttribute('data-active') === '1';
+            imgBtn.setAttribute('data-active', active ? '0' : '1');
+            if (active) {
+                // Reset to default state
+                imgBtn.style.background = 'white';
+                imgBtn.style.color = '#374151';
+            } else {
+                // Active state
+                imgBtn.style.background = '#111827';
+                imgBtn.style.color = 'white';
+            }
+            applyReviewFilters();
+        });
+        
+        // Hover effects for image button
+        imgBtn.addEventListener('mouseenter', function() {
+            if (imgBtn.getAttribute('data-active') === '0') {
+                imgBtn.style.background = '#f9fafb';
+                imgBtn.style.borderColor = '#9ca3af';
+            }
+        });
+        
+        imgBtn.addEventListener('mouseleave', function() {
+            if (imgBtn.getAttribute('data-active') === '0') {
+                imgBtn.style.background = 'white';
+                imgBtn.style.borderColor = '#d1d5db';
+            }
+        });
+    }
+      // Trigger filter on review render (if needed)
+    document.addEventListener('reviews:rendered', applyReviewFilters);
+    });
+</script>
 </body>
 </html>
