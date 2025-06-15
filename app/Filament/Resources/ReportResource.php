@@ -42,6 +42,13 @@ class ReportResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    protected static ?string $recordTitleAttribute = 'title';
+
+    public static function getRecordUrl(\Illuminate\Database\Eloquent\Model $record): string
+    {
+        return static::getUrl('view', ['record' => $record]);
+    }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::where('status', 'pending')->count() ?: null;
@@ -117,6 +124,9 @@ class ReportResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(
+                fn (Report $record): string => static::getUrl('view', ['record' => $record])
+            )
             ->columns([
                 TextColumn::make('name')
                     ->searchable()
@@ -189,7 +199,6 @@ class ReportResource extends Resource
                             ->send();
                     })
                     ->visible(fn (Report $record) => is_null($record->read_at)),
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Action::make('quickStatus')
                     ->label('Quick Status')
@@ -263,7 +272,7 @@ class ReportResource extends Resource
                         TextEntry::make('email')
                             ->label('Email')
                             ->copyable()
-                            ->icon('heroicon-m-envelope'),
+                            ->icon('heroicon-o-envelope'),
                         TextEntry::make('category')
                             ->label('Category')
                             ->badge()
@@ -309,7 +318,7 @@ class ReportResource extends Resource
                         TextEntry::make('admin.name')
                             ->label('Handled By')
                             ->default('Not assigned')
-                            ->icon('heroicon-m-user'),
+                            ->icon('heroicon-o-user'),
                         TextEntry::make('admin_notes')
                             ->label('Admin Notes')
                             ->default('No notes yet')
