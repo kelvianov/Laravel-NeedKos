@@ -337,6 +337,104 @@ body {
     box-shadow: none !important;
 }
 
+/* Custom Notification */
+.custom-notification {
+    position: fixed;
+    top: 86px;
+    right: 20px;
+    background: white;
+    color: #111;
+    padding: 20px 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    font-size: 15px;
+    font-weight: 500;
+    z-index: 9999;
+    transform: translateX(400px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    max-width: 420px;
+    min-width: 350px;
+    border-left: 4px solid #10B981;
+    backdrop-filter: blur(20px);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.custom-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.custom-notification.error {
+    border-left-color: #EF4444;
+}
+
+.custom-notification .notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.custom-notification .notification-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-top: 2px;
+}
+
+.custom-notification.success .notification-icon {
+    background: #10B981;
+    color: white;
+}
+
+.custom-notification.error .notification-icon {
+    background: #EF4444;
+    color: white;
+}
+
+.custom-notification .notification-text {
+    flex: 1;
+    line-height: 1.5;
+}
+
+.custom-notification .notification-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 16px;
+    color: #111;
+}
+
+.custom-notification .notification-message {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.custom-notification .notification-close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #999;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.custom-notification .notification-close:hover {
+    color: #666;
+    background: #f5f5f5;
+}
+
+/* Mobile responsiveness */
 @media (max-width: 768px) {
     .form-row {
         grid-template-columns: 1fr;
@@ -353,5 +451,23 @@ body {
     
     .report-header h1 {
         font-size: 1.5rem;
+    }
+    
+    .custom-notification {
+        right: 16px;
+        left: 16px;
+        max-width: none;
+        min-width: auto;
+        top: 10px;
+    }
+    
+    .custom-notification .notification-content {
+        gap: 12px;
+    }
+    
+    .custom-notification .notification-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
     }
 }

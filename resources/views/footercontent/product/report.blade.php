@@ -72,9 +72,59 @@
                 <button type="submit" class="submit-btn">
                     <i class="fas fa-paper-plane"></i> Submit Report
                 </button>
-            </form>
+            </form>        </div>
+    </main>    <!-- Custom Notification -->
+    <div id="customNotification" class="custom-notification">
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <div class="notification-text">
+                <div class="notification-title">Success!</div>
+                <div class="notification-message">Your report has been submitted successfully.</div>
+            </div>
         </div>
-    </main>    <script>
+        <button class="notification-close" onclick="hideNotification()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>    <script>
+        // Function to show custom notification
+        function showCustomNotification(title, message, type = 'success') {
+            const notification = document.getElementById('customNotification');
+            const titleElement = notification.querySelector('.notification-title');
+            const messageElement = notification.querySelector('.notification-message');
+            const iconElement = notification.querySelector('.notification-icon i');
+            
+            // Reset classes
+            notification.className = 'custom-notification';
+            
+            titleElement.textContent = title;
+            messageElement.textContent = message;
+            
+            // Update icon and class based on type
+            if (type === 'success') {
+                iconElement.className = 'fas fa-check';
+                notification.classList.add('success');
+            } else if (type === 'error') {
+                iconElement.className = 'fas fa-exclamation-triangle';
+                notification.classList.add('error');
+            }
+            
+            // Show notification
+            notification.classList.add('show');
+            
+            // Auto hide after 6 seconds
+            setTimeout(() => {
+                hideNotification();
+            }, 6000);
+        }
+
+        // Function to hide notification
+        function hideNotification() {
+            const notification = document.getElementById('customNotification');
+            notification.classList.remove('show');
+        }
+
         document.getElementById('reportForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -91,7 +141,7 @@
             const description = document.getElementById('description').value.trim();
 
             if (!name || !email || !category || !priority || !subject || !description) {
-                alert('Please fill in all required fields.');
+                showCustomNotification('Missing Information', 'Please fill in all required fields to submit your report.', 'error');
                 return;
             }
 
@@ -111,24 +161,24 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Thank you! Your report has been submitted successfully. We will review it and get back to you soon.');
+                    showCustomNotification('Report Submitted!', 'Thank you for your report. We will review it and get back to you soon via email.', 'success');
                     document.getElementById('reportForm').reset();
-                      if (window.categoryChoices) {
+                    if (window.categoryChoices) {
                         window.categoryChoices.setChoiceByValue('');
                     }
                 } else {
                     let errorMessage = 'There was an error submitting your report. Please try again.';
                     if (data.errors) {
-                        errorMessage = Object.values(data.errors).flat().join('\n');
+                        errorMessage = Object.values(data.errors).flat().join(' ');
                     } else if (data.message) {
                         errorMessage = data.message;
                     }
-                    alert(errorMessage);
+                    showCustomNotification('Submission Failed', errorMessage, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('There was an error submitting your report. Please try again.');
+                showCustomNotification('Network Error', 'Unable to submit your report. Please check your internet connection and try again.', 'error');
             })
             .finally(() => {
                 submitBtn.innerHTML = originalText;

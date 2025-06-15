@@ -81,6 +81,7 @@ Route::get('/careers', function () {
     return view('footercontent.company.careers');
 })->name('careers');
 
+Route::get('/report', [ReportController::class, 'index'])->name('report.index');
 Route::get('/report-problem', [ReportController::class, 'index'])->name('report.problem');
 Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
 
