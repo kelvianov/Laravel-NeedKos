@@ -115,11 +115,10 @@ class ViewReport extends ViewRecord
                 // Header Status Card
                 Section::make()
                     ->schema([                        Grid::make(4)
-                            ->schema([
-                                TextEntry::make('subject')
+                            ->schema([                                TextEntry::make('subject')
                                     ->label('Report Title')
                                     ->weight(FontWeight::Bold)
-                                    ->size('lg')
+                                    ->size('md')
                                     ->color('primary')
                                     ->columnSpan(3),
                                 TextEntry::make('status')
