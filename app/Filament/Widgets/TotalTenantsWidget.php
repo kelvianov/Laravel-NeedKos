@@ -10,6 +10,8 @@ class TotalTenantsWidget extends Widget
 {
     protected static string $view = 'filament.widgets.total-tenants-widget';
     protected static bool $isLazy = false;
+    protected int | string | array $columnSpan = 1;
+    protected static ?int $sort = 2; // Posisi kedua setelah Total Owners
 
     public int $totalTenants;
     public int|string $tenantTrendUp;
@@ -35,12 +37,10 @@ class TotalTenantsWidget extends Widget
             $this->tenantTrendUp = 'baru';
         } else {
             $this->tenantTrendUp = 0;
-        }
-    }
+        }    }
 
-    public static function shouldRender(): bool
+    public static function canView(): bool
     {
-        $user = Auth::user();
-        return $user && $user->role === 'admin';
+        return Auth::user()->role === 'admin';
     }
 }

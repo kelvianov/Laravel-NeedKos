@@ -19,9 +19,9 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-use App\Filament\Widgets\TotalKosWidget;
 use App\Filament\Widgets\TotalOwnersWidget;
 use App\Filament\Widgets\TotalTenantsWidget;
+use App\Filament\Widgets\PlatformStatsWidget;
 use App\Filament\Widgets\RecentReportsWidget;
 
 class AdminPanelProvider extends PanelProvider
@@ -53,9 +53,9 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 \App\Filament\Widgets\KoskuInfoWidget::class,
-                TotalKosWidget::class,
                 TotalOwnersWidget::class,
                 TotalTenantsWidget::class,
+                PlatformStatsWidget::class,
                 RecentReportsWidget::class,
             ])
             ->databaseNotifications()

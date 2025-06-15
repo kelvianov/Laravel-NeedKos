@@ -10,6 +10,8 @@ class TotalOwnersWidget extends Widget
 {
     protected static string $view = 'filament.widgets.total-owners-widget';
     protected static bool $isLazy = false;
+    protected int | string | array $columnSpan = 1;
+    protected static ?int $sort = 1; // Posisi pertama setelah Total Kos dihapus
 
     public int $totalOwners;
     public $ownerTrendUp; // bisa int atau string ('baru')
@@ -35,12 +37,10 @@ class TotalOwnersWidget extends Widget
             $this->ownerTrendUp = 'baru';
         } else {
             $this->ownerTrendUp = round((($thisMonthOwners - $lastMonthOwners) / $lastMonthOwners) * 100);
-        }
-    }
+        }    }
 
-    public static function shouldRender(): bool
+    public static function canView(): bool
     {
-        $user = Auth::user();
-        return $user && $user->role === 'admin';
+        return Auth::user()->role === 'admin';
     }
 }
