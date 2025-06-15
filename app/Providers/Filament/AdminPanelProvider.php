@@ -35,15 +35,14 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->authGuard('web')
             ->brandName('Kosku Admin')
-           ->colors([
-    'primary' => Color::Hex('#6366F1'),     // Ungu elegan (seperti Tailwind Indigo-500)
-    'secondary' => Color::Hex('#1F2937'),   // Abu gelap (Slate-800)
-    'success' => Color::Hex('#10B981'),     // Hijau segar (Emerald-500)
-    'warning' => Color::Hex('#F59E0B'),     // Kuning keemasan (Amber-500)
-    'danger' => Color::Hex('#EF4444'),      // Merah terang (Red-500)
-    'gray' => Color::Hex('#111827'),        // Background gelap (Gray-900)
-])
-
+         ->colors([
+                'primary' => Color::Blue,
+                'secondary' => Color::Slate,
+                'success' => Color::Green,
+                'warning' => Color::Amber,
+                'danger' => Color::Red,
+                'gray' => Color::Gray,
+            ]) 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
