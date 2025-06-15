@@ -27,8 +27,7 @@ class ViewReport extends ViewRecord
                 ->label('Update Status & Response')
                 ->icon('heroicon-o-pencil-square')
                 ->color('primary')
-                ->form([
-                    Select::make('status')
+                ->form([                    Select::make('status')
                         ->label('Report Status')
                         ->options([
                             'pending' => 'Pending Review',
@@ -38,8 +37,10 @@ class ViewReport extends ViewRecord
                         ])
                         ->default(fn () => $this->record->status)
                         ->required()
-                        ->helperText('Select the current status of this report'),
-                    Textarea::make('admin_notes')
+                        ->native(false)
+                        ->searchable()
+                        ->placeholder('Choose status...')
+                        ->helperText('Update the current processing status'),Textarea::make('admin_notes')
                         ->label('Administrative Response')
                         ->rows(5)
                         ->default(fn () => $this->record->admin_notes)
@@ -62,13 +63,12 @@ class ViewReport extends ViewRecord
 
                     // Refresh the page
                     $this->redirect(request()->header('Referer'));
-                })
-                ->modalHeading('Update Report Status & Response')
+                })                ->modalHeading('Update Report Status & Response')
                 ->modalDescription('Provide an update on the report status and add your administrative response.')
                 ->modalSubmitActionLabel('Update Report')
                 ->modalCancelActionLabel('Cancel')
                 ->requiresConfirmation()
-                ->modalIcon('heroicon-o-shield-check'),            Actions\Action::make('markAsRead')
+                ->modalIcon('heroicon-o-shield-check'),Actions\Action::make('markAsRead')
                 ->label('Mark as Read')
                 ->icon('heroicon-o-eye')
                 ->color('success')
@@ -118,7 +118,7 @@ class ViewReport extends ViewRecord
                             ->schema([                                TextEntry::make('subject')
                                     ->label('Report Title')
                                     ->weight(FontWeight::Bold)
-                                    ->size('md')
+                                    ->size('sm')
                                     ->color('primary')
                                     ->columnSpan(3),
                                 TextEntry::make('status')
