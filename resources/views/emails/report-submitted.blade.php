@@ -123,12 +123,10 @@
                     @endif">
                     {{ $report->category }}
                 </div>
-            </div>
-
-            <div class="field">
+            </div>            <div class="field">
                 <label>Submitted Date:</label>
                 <div class="field-value">
-                    {{ $report->created_at->format('l, F j, Y \a\t g:i A') }}
+                    {{ \Carbon\Carbon::parse($report->created_at ?? now())->format('l, F j, Y \a\t g:i A') }}
                 </div>
             </div>
 

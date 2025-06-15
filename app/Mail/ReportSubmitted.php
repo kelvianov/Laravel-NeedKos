@@ -10,11 +10,11 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ReportSubmitted extends Mailable implements ShouldQueue
+class ReportSubmitted extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
 
-    public $report;
+    public $reportData;
     public $isUserConfirmation;
 
     /**
@@ -22,7 +22,10 @@ class ReportSubmitted extends Mailable implements ShouldQueue
      */
     public function __construct(Report $report, bool $isUserConfirmation = false)
     {
-        $this->report = $report;
+        // Convert model to array to avoid serialization issues
+        $this->reportData = $report->toArray();
+        $this->reportData['id'] = $report->id;
+        $this->isUserConfirmation = $isUserConfirmation;
         $this->isUserConfirmation = $isUserConfirmation;
     }
 
@@ -33,11 +36,11 @@ class ReportSubmitted extends Mailable implements ShouldQueue
     {
         $subject = $this->isUserConfirmation 
             ? 'Konfirmasi - Report Anda Telah Diterima'
-            : 'New Report Submitted - ' . $this->report->category;
+            : 'New Report Submitted - ' . $this->reportData['category'];
 
         return new Envelope(
             subject: $subject,
-            replyTo: [$this->report->email],
+            replyTo: [$this->reportData['email']],
         );
     }
 
@@ -53,7 +56,7 @@ class ReportSubmitted extends Mailable implements ShouldQueue
         return new Content(
             view: $view,
             with: [
-                'report' => $this->report,
+                'report' => (object) $this->reportData,
                 'isUserConfirmation' => $this->isUserConfirmation
             ]
         );

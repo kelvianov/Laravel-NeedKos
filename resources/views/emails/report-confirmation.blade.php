@@ -140,7 +140,7 @@
                 
                 <div class="detail-row">
                     <div class="detail-label">Tanggal Pengiriman:</div>
-                    <div class="detail-value">{{ $report->created_at->format('d F Y, H:i') }}</div>
+                    <div class="detail-value">{{ \Carbon\Carbon::parse($report->created_at ?? now())->format('d F Y, H:i') }}</div>
                 </div>
             </div>
             

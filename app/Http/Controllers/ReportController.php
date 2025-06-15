@@ -23,6 +23,12 @@ class ReportController extends Controller
 
     public function store(Request $request)
     {
+        // Debug logging
+        Log::info('Report submission started', [
+            'user_email' => $request->email,
+            'category' => $request->category
+        ]);
+
         // Validasi data
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -56,6 +62,7 @@ class ReportController extends Controller
             try {
                 $adminEmail = config('mail.admin_email', 'admin@needkos.com');
                 Mail::to($adminEmail)->send(new ReportSubmitted($report));
+                Log::info('Admin email sent successfully', ['admin_email' => $adminEmail]);
             } catch (\Exception $e) {
                 Log::error('Failed to send admin email: ' . $e->getMessage());
             }
@@ -63,6 +70,7 @@ class ReportController extends Controller
             // Kirim konfirmasi ke user
             try {
                 Mail::to($request->email)->send(new ReportSubmitted($report, true));
+                Log::info('User confirmation email sent successfully', ['user_email' => $request->email]);
             } catch (\Exception $e) {
                 Log::error('Failed to send user confirmation email: ' . $e->getMessage());
             }
