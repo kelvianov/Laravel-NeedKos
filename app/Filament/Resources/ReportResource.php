@@ -141,16 +141,7 @@ class ReportResource extends Resource
                         'medium' => 'warning', 
                         'high' => 'danger',
                     }),
-                TextColumn::make('subject')
-                    ->searchable()
-                    ->limit(30)
-                    ->tooltip(function (TextColumn $column): ?string {
-                        $state = $column->getState();
-                        if (strlen($state) <= 30) {
-                            return null;
-                        }
-                        return $state;
-                    }),
+            
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
