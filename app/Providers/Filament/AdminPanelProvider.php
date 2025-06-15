@@ -36,12 +36,12 @@ class AdminPanelProvider extends PanelProvider
             ->authGuard('web')
             ->brandName('Kosku Admin')
             ->colors([
-                'primary' => Color::Gray,
-                'secondary' => Color::Blue,
-                'success' => Color::Emerald,
-                'warning' => Color::Orange,
-                'danger' => Color::Rose,
-                'gray' => Color::Zinc,
+                'primary' => Color::Blue,
+                'secondary' => Color::Slate,
+                'success' => Color::Green,
+                'warning' => Color::Amber,
+                'danger' => Color::Red,
+                'gray' => Color::Gray,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
